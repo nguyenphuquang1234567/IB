@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -167,6 +168,16 @@ export default function LoginPage() {
               </svg>
               Sign in with Google
             </Button>
+
+            <p className="text-center text-sm text-finstep-brown/70 mt-4 font-nunito font-semibold">
+              Don't have an account?{" "}
+              <Link
+                href="/register"
+                className="text-finstep-orange hover:text-finstep-orange/80 transition-colors underline underline-offset-4"
+              >
+                Sign up
+              </Link>
+            </p>
           </CardContent>
         </Card>
       </motion.div>
