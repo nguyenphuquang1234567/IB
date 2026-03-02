@@ -55,29 +55,29 @@
     /* Invert: Brown text becomes Beige text */
     --finstep-lightbrown: 29 80% 65%;
     /* Brighten slightly for contrast */
-    --finstep-beige: 19 25% 15%;
+    --finstep-beige: 19 30% 12%;
     /* Invert: Beige background becomes Dark Warm gray/brown */
 
     --background: var(--finstep-beige);
     --foreground: var(--finstep-brown);
-    --card: 224 71% 6%;
-    --card-foreground: 210 40% 98%;
-    --popover: 224 71% 6%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 215 28% 17%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 215 28% 17%;
-    --muted-foreground: 217 10% 55%;
-    --accent: 215 28% 17%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 63% 31%;
+    --card: 19 30% 16%;
+    --card-foreground: var(--finstep-brown);
+    --popover: 19 30% 16%;
+    --popover-foreground: var(--finstep-brown);
+    --primary: var(--finstep-orange);
+    --primary-foreground: 19 30% 12%;
+    --secondary: 19 30% 20%;
+    --secondary-foreground: var(--finstep-brown);
+    --muted: 19 30% 20%;
+    --muted-foreground: 19 10% 65%;
+    --accent: 19 30% 20%;
+    --accent-foreground: var(--finstep-brown);
+    --destructive: 0 63% 40%;
     --destructive-foreground: 0 0% 98%;
-    --border: 215 28% 17%;
-    --input: 215 28% 17%;
-    --ring: 217 91% 60%;
-    --chart-1: 217 91% 60%;
+    --border: 19 30% 22%;
+    --input: 19 30% 22%;
+    --ring: var(--finstep-orange);
+    --chart-1: var(--finstep-orange);
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
