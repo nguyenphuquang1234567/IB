@@ -49,7 +49,7 @@ export default function LoginPage() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="relative w-full max-w-md"
       >
-        <Card className="shadow-2xl shadow-finstep-orange/5 border-finstep-brown/10 bg-white/80 backdrop-blur-sm">
+        <Card className="shadow-2xl shadow-finstep-orange/5 border-finstep-brown/10 bg-card/80 backdrop-blur-sm">
           <CardHeader className="text-center space-y-4 pb-2">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}

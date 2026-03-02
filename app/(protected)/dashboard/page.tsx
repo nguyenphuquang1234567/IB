@@ -126,7 +126,7 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <motion.div variants={item}>
-          <Card className="shadow-sm hover:shadow-md transition-shadow border-finstep-brown/10 bg-white/80 backdrop-blur-sm">
+          <Card className="shadow-sm hover:shadow-md transition-shadow border-finstep-brown/10 bg-card/80 backdrop-blur-sm">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
                 <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500/10 to-amber-600/5 flex items-center justify-center">
@@ -146,7 +146,7 @@ export default function DashboardPage() {
         </motion.div>
 
         <motion.div variants={item}>
-          <Card className="shadow-sm hover:shadow-md transition-shadow border-finstep-brown/10 bg-white/80 backdrop-blur-sm">
+          <Card className="shadow-sm hover:shadow-md transition-shadow border-finstep-brown/10 bg-card/80 backdrop-blur-sm">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
                 <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-finstep-orange/10 to-finstep-orange/5 flex items-center justify-center">
@@ -162,7 +162,7 @@ export default function DashboardPage() {
         </motion.div>
 
         <motion.div variants={item}>
-          <Card className="shadow-sm hover:shadow-md transition-shadow border-finstep-brown/10 bg-white/80 backdrop-blur-sm">
+          <Card className="shadow-sm hover:shadow-md transition-shadow border-finstep-brown/10 bg-card/80 backdrop-blur-sm">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
                 <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-red-500/10 to-red-600/5 flex items-center justify-center">
@@ -182,7 +182,7 @@ export default function DashboardPage() {
         </motion.div>
 
         <motion.div variants={item}>
-          <Card className="shadow-sm hover:shadow-md transition-shadow border-finstep-brown/10 bg-white/80 backdrop-blur-sm">
+          <Card className="shadow-sm hover:shadow-md transition-shadow border-finstep-brown/10 bg-card/80 backdrop-blur-sm">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
                 <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-500/10 to-orange-600/5 flex items-center justify-center">
@@ -202,7 +202,7 @@ export default function DashboardPage() {
 
       <motion.div variants={item}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="shadow-sm border-finstep-brown/10 bg-white/80 backdrop-blur-sm md:col-span-2">
+          <Card className="shadow-sm border-finstep-brown/10 bg-card/80 backdrop-blur-sm md:col-span-2">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between mb-5">
                 <h3 className="font-varela font-bold text-xl text-finstep-brown">Quick Start</h3>
@@ -260,7 +260,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-sm border-finstep-brown/10 bg-white/80 backdrop-blur-sm">
+          <Card className="shadow-sm border-finstep-brown/10 bg-card/80 backdrop-blur-sm">
             <CardContent className="pt-6">
               <h3 className="font-varela font-bold text-lg text-finstep-brown mb-4">Recent Results</h3>
               {progress.quizHistory.length === 0 ? (
@@ -314,7 +314,7 @@ export default function DashboardPage() {
 
             return (
               <motion.div key={section.label} whileHover={{ y: -3, transition: { duration: 0.2 } }}>
-                <Card className="shadow-sm hover:shadow-lg transition-all border-finstep-brown/10 bg-white/80 backdrop-blur-sm overflow-hidden group">
+                <Card className="shadow-sm hover:shadow-lg transition-all border-finstep-brown/10 bg-card/80 backdrop-blur-sm overflow-hidden group">
                   <div className={`h-1 bg-gradient-to-r from-finstep-orange to-finstep-lightbrown opacity-0 group-hover:opacity-100 transition-opacity`} />
                   <CardHeader className="pb-2 pt-5">
                     <div className="flex items-center justify-between">

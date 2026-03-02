@@ -10,8 +10,17 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+    --finstep-orange: 32 75% 61%;
+    /* #E5A152 */
+    --finstep-brown: 19 33% 36%;
+    /* #7A513E */
+    --finstep-lightbrown: 29 66% 56%;
+    /* #D98C44 */
+    --finstep-beige: 40 46% 96%;
+    /* #F9F6F0 */
+
+    --background: var(--finstep-beige);
+    --foreground: var(--finstep-brown);
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
@@ -38,9 +47,19 @@
     --success: 142 76% 36%;
     --warning: 38 92% 50%;
   }
+
   .dark {
-    --background: 224 71% 4%;
-    --foreground: 210 40% 98%;
+    --finstep-orange: 32 75% 61%;
+    /* Keep orange vibrant */
+    --finstep-brown: 40 46% 96%;
+    /* Invert: Brown text becomes Beige text */
+    --finstep-lightbrown: 29 80% 65%;
+    /* Brighten slightly for contrast */
+    --finstep-beige: 19 25% 15%;
+    /* Invert: Beige background becomes Dark Warm gray/brown */
+
+    --background: var(--finstep-beige);
+    --foreground: var(--finstep-brown);
     --card: 224 71% 6%;
     --card-foreground: 210 40% 98%;
     --popover: 224 71% 6%;
@@ -72,6 +91,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -82,24 +102,30 @@
   .scrollbar-thin {
     scrollbar-width: thin;
   }
+
   .scrollbar-thin::-webkit-scrollbar {
     width: 6px;
   }
+
   .scrollbar-thin::-webkit-scrollbar-track {
     background: transparent;
   }
+
   .scrollbar-thin::-webkit-scrollbar-thumb {
     background-color: hsl(var(--muted-foreground) / 0.3);
     border-radius: 3px;
   }
+
   .glass {
     background: hsl(var(--card) / 0.7);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
+
   .gradient-primary {
     background: linear-gradient(135deg, hsl(32, 75%, 61%), hsl(29, 66%, 56%));
   }
+
   .gradient-text {
     background: linear-gradient(135deg, hsl(32, 75%, 61%), hsl(29, 66%, 56%));
     -webkit-background-clip: text;

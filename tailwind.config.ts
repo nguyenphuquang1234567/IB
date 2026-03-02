@@ -15,10 +15,10 @@ const config: Config = {
 			},
 			colors: {
 				finstep: {
-					orange: "#E5A152",
-					brown: "#7A513E",
-					lightbrown: "#D98C44",
-					beige: "#F9F6F0",
+					orange: "hsl(var(--finstep-orange))",
+					brown: "hsl(var(--finstep-brown))",
+					lightbrown: "hsl(var(--finstep-lightbrown))",
+					beige: "hsl(var(--finstep-beige))",
 				},
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',

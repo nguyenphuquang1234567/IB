@@ -79,7 +79,7 @@ export function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed bottom-20 right-4 sm:right-6 z-50 w-[360px] max-w-[calc(100vw-2rem)] rounded-2xl border border-finstep-brown/10 bg-white/95 backdrop-blur-md shadow-2xl shadow-finstep-orange/10 overflow-hidden font-nunito"
+            className="fixed bottom-20 right-4 sm:right-6 z-50 w-[360px] max-w-[calc(100vw-2rem)] rounded-2xl border border-finstep-brown/10 bg-card/95 backdrop-blur-md shadow-2xl shadow-finstep-orange/10 overflow-hidden font-nunito"
           >
             <div className="bg-finstep-orange px-4 py-3 flex items-center justify-between border-b border-finstep-brown/10">
               <div className="flex items-center gap-2 text-white">
@@ -168,7 +168,7 @@ export function Chatbot() {
               </div>
             </ScrollArea>
 
-            <div className="p-3 border-t border-finstep-brown/10 bg-white/50 backdrop-blur-sm">
+            <div className="p-3 border-t border-finstep-brown/10 bg-card/50 backdrop-blur-sm">
               <div className="flex gap-2">
                 <Input
                   ref={inputRef}
