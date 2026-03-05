@@ -70,6 +70,7 @@ interface QuizState {
   startQuiz: (section?: Section, questions?: Question[]) => void;
   startDragQuiz: () => void;
   fetchDBAnalytics: () => Promise<void>;
+  fetchAllTechnicalQuestions: () => Promise<void>;
   submitAnswer: (questionId: string, answer: string) => void;
   submitDragAnswer: (questionId: string, answer: string) => void;
   nextQuestion: () => void;
@@ -127,8 +128,35 @@ export const useQuizStore = create<QuizState>()(
       },
 
       startQuiz: (section, questions) => {
-        const { difficulty, eliteMode } = get();
-        const quizQuestions = questions || getRandomQuestions(getFilteredQuestions(section, difficulty, eliteMode), 20);
+        const { difficulty, eliteMode, allTechnicalQuestions } = get();
+
+        let quizQuestions: Question[] = [];
+
+        if (questions) {
+          quizQuestions = questions;
+        } else {
+          // Logic to prefer DB questions if available
+          const pool = allTechnicalQuestions.length > 0
+            ? allTechnicalQuestions
+            : getFilteredQuestions(section, difficulty, eliteMode);
+
+          // If we are using the DB pool, we need to filter it here since we aren't using the local getFilteredQuestions on it
+          let filteredPool = pool;
+          if (allTechnicalQuestions.length > 0) {
+            if (section) {
+              filteredPool = filteredPool.filter(q => q.section === section);
+            }
+            if (difficulty && !eliteMode) {
+              filteredPool = filteredPool.filter(q => q.difficulty === difficulty);
+            }
+            if (!eliteMode) {
+              filteredPool = filteredPool.filter(q => q.difficulty !== "Elite");
+            }
+          }
+
+          quizQuestions = getRandomQuestions(filteredPool, 20);
+        }
+
         set({
           currentQuiz: quizQuestions,
           currentIndex: 0,
@@ -169,6 +197,20 @@ export const useQuizStore = create<QuizState>()(
           }
         } catch (err) {
           console.error("[Store] fetchDBAnalytics network error:", err);
+        }
+      },
+
+      fetchAllTechnicalQuestions: async () => {
+        try {
+          const res = await fetch('/api/technical-questions');
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data)) {
+              set({ allTechnicalQuestions: data });
+            }
+          }
+        } catch (err) {
+          console.error("[Store] fetchAllTechnicalQuestions network error:", err);
         }
       },
 

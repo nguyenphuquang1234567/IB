@@ -86,11 +86,11 @@ export default function QuizPage() {
   const router = useRouter();
   const {
     allTechnicalQuestions,
-    setAllTechnicalQuestions,
     startQuiz,
     submitAnswer: storeSubmitAnswer,
     completeQuiz,
     fetchDBAnalytics,
+    fetchAllTechnicalQuestions,
   } = useQuizStore();
   const [loading, setLoading] = useState(allTechnicalQuestions.length === 0);
   const [mode, setMode] = useState<QuizMode>("select");
@@ -120,31 +120,17 @@ export default function QuizPage() {
 
   // Load questions from DB if store is empty
   useEffect(() => {
-    if (allTechnicalQuestions.length > 0) {
+    if (allTechnicalQuestions.length === 0) {
+      setLoading(true);
+      fetchAllTechnicalQuestions().finally(() => setLoading(false));
+    } else {
       setLoading(false);
-      return;
     }
-
-    fetch("/api/technical-questions")
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setAllTechnicalQuestions(data);
-        } else {
-          console.error("API did not return an array:", data);
-          setAllTechnicalQuestions([]); // Fallback
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch questions:", err);
-        setLoading(false);
-      });
-  }, [allTechnicalQuestions.length, setAllTechnicalQuestions]);
+  }, [allTechnicalQuestions.length, fetchAllTechnicalQuestions]);
 
   const handleStartSection = useCallback((section: Section) => {
     const safeQuestions = Array.isArray(allTechnicalQuestions) ? allTechnicalQuestions : [];
-    const sectionQuestions = shuffleArray(safeQuestions.filter(q => q.section === section));
+    const sectionQuestions = shuffleArray(safeQuestions.filter((q: Question) => q.section === section));
     setSelectedSection(section);
     setQuestions(sectionQuestions);
     startQuiz(section, sectionQuestions);
@@ -201,7 +187,7 @@ export default function QuizPage() {
 
   const handleShuffle = useCallback(() => {
     const safeQuestions = Array.isArray(allTechnicalQuestions) ? allTechnicalQuestions : [];
-    const sectionQuestions = safeQuestions.filter(q => q.section === selectedSection);
+    const sectionQuestions = safeQuestions.filter((q: Question) => q.section === selectedSection);
     setQuestions(shuffleArray(sectionQuestions));
     setCurrentIndex(0);
     setAnswers({});

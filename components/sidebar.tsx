@@ -54,7 +54,7 @@ const sections: { label: Section; icon: typeof Calculator }[] = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { eliteMode, setEliteMode, progress, dbAnalytics, fetchDBAnalytics } = useQuizStore();
+  const { eliteMode, setEliteMode, progress, dbAnalytics, fetchDBAnalytics, fetchAllTechnicalQuestions } = useQuizStore();
   const { theme, setTheme } = useTheme();
   const { data: session } = useSession();
   const [mounted, setMounted] = useState(false);
@@ -63,8 +63,9 @@ export function Sidebar() {
     setMounted(true);
     if (session) {
       fetchDBAnalytics();
+      fetchAllTechnicalQuestions();
     }
-  }, [session, fetchDBAnalytics]);
+  }, [session, fetchDBAnalytics, fetchAllTechnicalQuestions]);
 
   return (
     <aside className="flex flex-col w-full bg-finstep-beige/30 h-screen sticky top-0">
