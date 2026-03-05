@@ -131,6 +131,13 @@ export default function QuizPage() {
   const handleStartSection = useCallback((section: Section) => {
     const safeQuestions = Array.isArray(allTechnicalQuestions) ? allTechnicalQuestions : [];
     const sectionQuestions = shuffleArray(safeQuestions.filter((q: Question) => q.section === section));
+
+    // Reset local states
+    setCurrentIndex(0);
+    setAnswers({});
+    setRevealed({});
+    setFinished(false);
+
     setSelectedSection(section);
     setQuestions(sectionQuestions);
     startQuiz(section, sectionQuestions);
