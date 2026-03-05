@@ -36,10 +36,11 @@ export const dragQuestions: DragQuestion[] = [
   {
     id: "drag-5",
     lineItem: "Capital Expenditures",
-    correctAnswer: "Cash Flow Statement",
+    correctAnswer: "CFI",
     explanation:
       "CapEx is a cash outflow in the investing section of the CFS. It measures actual cash spent on long-term assets.",
     difficulty: "Beginner",
+    hint: "Think: cash spent on long-term assets",
   },
   {
     id: "drag-6",
@@ -52,10 +53,11 @@ export const dragQuestions: DragQuestion[] = [
   {
     id: "drag-7",
     lineItem: "Dividends Paid",
-    correctAnswer: "Cash Flow Statement",
+    correctAnswer: "CFF",
     explanation:
       "Dividends Paid is a cash outflow in the financing section of the CFS. It measures actual cash distributed to shareholders.",
     difficulty: "Beginner",
+    hint: "Cash going to shareholders",
   },
   {
     id: "drag-8",
@@ -104,6 +106,8 @@ export const dragQuestions: DragQuestion[] = [
     explanation:
       "Depreciation is an operating expense on the IS that allocates the cost of PP&E over its useful life. It also gets added back on the CFS as a non-cash charge.",
     difficulty: "Advanced",
+    isTricky: true,
+    hint: "The expense appears on IS; the add-back appears on CFS. We classify by where the expense is recorded.",
   },
   {
     id: "drag-14",
@@ -180,18 +184,20 @@ export const dragQuestions: DragQuestion[] = [
   {
     id: "drag-23",
     lineItem: "Debt Issuance (Proceeds from Borrowing)",
-    correctAnswer: "Cash Flow Statement",
+    correctAnswer: "CFF",
     explanation:
       "Debt Issuance is a cash inflow in the financing section of the CFS. It measures actual cash received from lenders.",
     difficulty: "Advanced",
+    hint: "Cash received from borrowing",
   },
   {
     id: "drag-24",
     lineItem: "Issuance of Common Stock",
-    correctAnswer: "Cash Flow Statement",
+    correctAnswer: "CFF",
     explanation:
       "Equity issuance is a cash inflow in the financing section of the CFS. It measures actual cash received from new shares.",
     difficulty: "Advanced",
+    hint: "Cash from selling shares",
   },
   {
     id: "drag-25",
@@ -300,26 +306,30 @@ export const dragQuestions: DragQuestion[] = [
   {
     id: "drag-38",
     lineItem: "Depreciation Add-Back",
-    correctAnswer: "Cash Flow Statement",
+    correctAnswer: "CFO",
     explanation:
       "Depreciation is added back in the operating section of the CFS because it's a non-cash charge that reduced Net Income.",
     difficulty: "Advanced",
+    isTricky: true,
+    hint: "Non-cash add-back in operating section",
   },
   {
     id: "drag-39",
     lineItem: "Change in Working Capital",
-    correctAnswer: "Cash Flow Statement",
+    correctAnswer: "CFO",
     explanation:
       "Changes in working capital (AR, inventory, AP, etc.) are adjustments in the operating section of the CFS to reconcile net income to actual cash.",
     difficulty: "Advanced",
+    hint: "Reconciles net income to cash in operating section",
   },
   {
     id: "drag-40",
     lineItem: "Repayment of Long-Term Debt",
-    correctAnswer: "Cash Flow Statement",
+    correctAnswer: "CFF",
     explanation:
       "Debt repayment is a cash outflow in the financing section of the CFS. Principal payments are NOT an expense on the IS.",
     difficulty: "Advanced",
+    hint: "Cash paid to reduce debt",
   },
   {
     id: "drag-41",
@@ -348,10 +358,11 @@ export const dragQuestions: DragQuestion[] = [
   {
     id: "drag-44",
     lineItem: "Purchase of Marketable Securities",
-    correctAnswer: "Cash Flow Statement",
+    correctAnswer: "CFI",
     explanation:
       "Purchasing securities is a cash outflow in the investing section of the CFS. It represents actual cash spent on financial investments.",
     difficulty: "Advanced",
+    hint: "Cash spent on investments",
   },
   {
     id: "drag-45",
@@ -380,10 +391,11 @@ export const dragQuestions: DragQuestion[] = [
   {
     id: "drag-48",
     lineItem: "Share Repurchase (Buyback)",
-    correctAnswer: "Cash Flow Statement",
+    correctAnswer: "CFF",
     explanation:
       "Share repurchases are cash outflows in the financing section of the CFS. The shares become treasury stock on the BS.",
     difficulty: "Elite",
+    hint: "Cash spent buying back shares",
   },
   {
     id: "drag-49",
@@ -400,5 +412,52 @@ export const dragQuestions: DragQuestion[] = [
     explanation:
       "A loss on debt extinguishment hits the IS when a company repays debt at a premium or writes off unamortized issuance costs.",
     difficulty: "Elite",
+  },
+  {
+    id: "drag-51",
+    lineItem: "Interest Paid",
+    correctAnswer: "CFF",
+    explanation:
+      "Under US GAAP, interest paid is in the financing section (CFF). Under IFRS, it can be in operating (CFO) or financing. US GAAP is standard for most IB interviews.",
+    difficulty: "Advanced",
+    isTricky: true,
+    hint: "Cash paid for interest — US GAAP: financing; IFRS: operating or financing",
+  },
+  {
+    id: "drag-52",
+    lineItem: "Proceeds from Sale of PP&E",
+    correctAnswer: "CFI",
+    explanation:
+      "Proceeds from selling property, plant & equipment are a cash inflow in the investing section of the CFS.",
+    difficulty: "Advanced",
+    hint: "Cash received from selling assets",
+  },
+  {
+    id: "drag-53",
+    lineItem: "Stock-Based Compensation Add-Back",
+    correctAnswer: "CFO",
+    explanation:
+      "SBC is added back in the operating section of the CFS because it's a non-cash expense that reduced Net Income.",
+    difficulty: "Advanced",
+    isTricky: true,
+    hint: "Non-cash add-back like depreciation",
+  },
+  {
+    id: "drag-54",
+    lineItem: "Amortization Add-Back",
+    correctAnswer: "CFO",
+    explanation:
+      "Amortization is added back in the operating section of the CFS as a non-cash charge, similar to depreciation.",
+    difficulty: "Advanced",
+    hint: "Non-cash add-back in operating section",
+  },
+  {
+    id: "drag-55",
+    lineItem: "Acquisition of Business",
+    correctAnswer: "CFI",
+    explanation:
+      "Cash paid for an acquisition is an investing outflow. It represents cash spent to buy another company.",
+    difficulty: "Elite",
+    hint: "Cash spent buying a company",
   },
 ];

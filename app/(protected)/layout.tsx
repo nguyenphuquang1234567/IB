@@ -17,13 +17,13 @@ export default async function ProtectedLayout({
   }
 
   return (
-    <div className="flex min-h-screen w-full relative overflow-x-hidden">
+    <div className="flex min-h-screen w-full relative">
       <div className="hidden xl:block w-72 shrink-0 border-r border-border/10">
         <Sidebar />
       </div>
-      <div className="flex-1 flex flex-col min-w-0 min-h-screen">
+      <div className="flex-1 flex flex-col min-w-0 min-h-screen overflow-x-hidden">
         <MobileNav />
-        <main className="flex-1 w-full p-2 md:p-6 lg:p-8">
+        <main className="flex-1 w-full min-w-0 overflow-x-auto p-2 md:p-6 lg:p-8">
           {children}
         </main>
         <Chatbot />

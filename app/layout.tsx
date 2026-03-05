@@ -17,7 +17,7 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "IB400 Pro Trainer",
+  title: "finstep.app",
   description: "Investment Banking Technical Interview Training Platform",
 };
 

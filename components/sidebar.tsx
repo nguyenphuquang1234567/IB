@@ -10,47 +10,26 @@ import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useQuizStore } from "@/store/useQuizStore";
 import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import {
-  TrendingUp,
-  LayoutDashboard,
-  BookOpen,
-  GripVertical,
-  BarChart3,
-  LogOut,
-  Zap,
-  Calculator,
-  Building2,
-  Scale,
-  Percent,
-  DollarSign,
-  FlaskConical,
-  Users,
-  Sun,
-  Moon,
-} from "lucide-react";
-import { Section } from "@/types/question";
+import { LayoutDashboard, Sun, Moon, ChevronDown, LogOut, Zap, Settings } from "lucide-react";
+import { FinstepLogo } from "@/components/finstep-logo";
 import { useTheme } from "next-themes";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { DOMAINS } from "@/lib/navigation/domains";
 
-const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/quiz", label: "Quiz Engine", icon: BookOpen },
-  { href: "/accounting-drag", label: "Drag & Drop", icon: GripVertical },
-  { href: "/simulation", label: "3-Statement Sim", icon: FlaskConical },
-  { href: "/dcf", label: "DCF Model", icon: Calculator },
-];
+function isPathActive(pathname: string | null, href: string): boolean {
+  if (!pathname) return false;
+  if (href === "/dashboard") return pathname === "/dashboard";
+  return pathname === href || pathname.startsWith(href + "/");
+}
 
-const sections: { label: Section; icon: typeof Calculator }[] = [
-  { label: "Accounting", icon: Calculator },
-  { label: "EV vs Equity Value", icon: Building2 },
-  { label: "Valuation", icon: DollarSign },
-  { label: "M&A", icon: Scale },
-  { label: "LBO", icon: BarChart3 },
-  { label: "Accretion/Dilution", icon: Percent },
-  { label: "Fit & Behavioral", icon: Users },
-];
+function isDomainActive(pathname: string | null, domain: (typeof DOMAINS)[0]): boolean {
+  return (
+    pathname === domain.landingHref ||
+    domain.items.some((item) => isPathActive(pathname, item.href))
+  );
+}
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -71,72 +50,78 @@ export function Sidebar() {
     <aside className="flex flex-col w-full bg-finstep-beige/30 h-screen sticky top-0">
       <div className="p-6">
         <Link href="/dashboard" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-finstep-orange flex items-center justify-center shadow-lg shadow-finstep-orange/20 group-hover:shadow-finstep-orange/40 transition-shadow">
-            <TrendingUp className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h1 className="font-varela font-bold text-lg tracking-tight text-finstep-brown">IB400</h1>
-            <p className="font-nunito text-xs text-finstep-brown/70 font-semibold">Pro Trainer</p>
-          </div>
+          <FinstepLogo size="md" showText={true} />
         </Link>
       </div>
 
       <Separator className="opacity-50" />
 
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto scrollbar-thin">
-        {navItems.map((item) => {
-          const isActive =
-            pathname === item.href ||
-            (item.href !== "/dashboard" && pathname?.startsWith(item.href));
-          return (
-            <Link key={item.href} href={item.href}>
+        <Link href="/dashboard">
+          <motion.div
+            whileHover={{ x: 4 }}
+            className={cn(
+              "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-nunito font-semibold transition-all",
+              pathname === "/dashboard"
+                ? "bg-finstep-orange text-white shadow-md shadow-finstep-orange/20"
+                : "text-finstep-brown/70 hover:text-finstep-brown hover:bg-finstep-beige"
+            )}
+          >
+            <LayoutDashboard className="w-4 h-4" />
+            Dashboard
+          </motion.div>
+        </Link>
+
+        {DOMAINS.map((domain) => (
+          <Collapsible
+            key={domain.id}
+            defaultOpen={isDomainActive(pathname, domain)}
+            className="mt-1"
+          >
+            <CollapsibleTrigger asChild>
               <motion.div
                 whileHover={{ x: 4 }}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-nunito font-semibold transition-all",
-                  isActive
-                    ? "bg-finstep-orange text-white shadow-md shadow-finstep-orange/20"
-                    : "text-finstep-brown/70 hover:text-finstep-brown hover:bg-finstep-beige scrollbar-thin"
+                  "group flex items-center justify-between gap-2 w-full px-3 py-2.5 rounded-lg text-sm font-nunito font-semibold transition-all cursor-pointer",
+                  isDomainActive(pathname, domain)
+                    ? "bg-finstep-orange/10 text-finstep-orange dark:text-finstep-orange"
+                    : "text-finstep-brown/70 hover:text-finstep-brown hover:bg-finstep-beige"
                 )}
               >
-                <item.icon className="w-4 h-4" />
-                {item.label}
+                <div className="flex items-center gap-3">
+                  <domain.icon className="w-4 h-4" />
+                  {domain.label}
+                </div>
+                <ChevronDown className="w-4 h-4 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180" />
               </motion.div>
-            </Link>
-          );
-        })}
-
-        <Separator className="my-3 opacity-20 bg-finstep-brown" />
-
-        <p className="px-3 text-xs font-nunito font-bold text-finstep-brown/60 uppercase tracking-wider mb-2">
-          Sections
-        </p>
-
-        {sections.map((section) => {
-          const sectionData = dbAnalytics.sections.find(s => s.section === section.label);
-          if (mounted && sectionData) console.log(`[Sidebar] Found data for ${section.label}:`, sectionData);
-          const sectionAcc = sectionData ? sectionData.accuracy : null;
-
-          return (
-            <div
-              key={section.label}
-              className="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-finstep-brown/80 font-nunito font-medium"
-            >
-              <div className="flex items-center gap-2">
-                <section.icon className="w-3.5 h-3.5 text-finstep-lightbrown" />
-                <span className="text-xs">{section.label}</span>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="ml-4 mt-1 space-y-0.5 border-l-2 border-finstep-brown/10 pl-3">
+                {domain.items.map((item) => {
+                    const isActive = isPathActive(pathname, item.href);
+                    const isComingSoon = item.label === "Coming Soon";
+                    return (
+                      <Link key={item.href} href={item.href}>
+                        <motion.div
+                          whileHover={{ x: 2 }}
+                          className={cn(
+                            "flex items-center gap-2 px-2 py-2 rounded-md text-xs font-nunito font-semibold transition-all",
+                            isActive
+                              ? "bg-finstep-orange text-white shadow-md shadow-finstep-orange/20"
+                              : "text-finstep-brown/70 hover:text-finstep-brown hover:bg-finstep-beige/50",
+                            isComingSoon && "opacity-70"
+                          )}
+                        >
+                          <item.icon className="w-3.5 h-3.5" />
+                          {item.label}
+                        </motion.div>
+                      </Link>
+                    );
+                  })}
               </div>
-              {mounted && sectionAcc !== null && (
-                <Badge
-                  variant={sectionAcc >= 75 ? "default" : "secondary"}
-                  className="text-[10px] px-1.5 py-0"
-                >
-                  {sectionAcc}%
-                </Badge>
-              )}
-            </div>
-          );
-        })}
+            </CollapsibleContent>
+          </Collapsible>
+        ))}
 
         <Separator className="my-3 opacity-20 bg-finstep-brown" />
 
@@ -160,8 +145,23 @@ export function Sidebar() {
 
         <Separator className="my-3 opacity-20 bg-finstep-brown" />
 
-        <p className="px-3 text-xs font-nunito font-bold text-finstep-brown/60 uppercase tracking-wider mb-2">
-          Settings
+        <Link href="/settings">
+          <motion.div
+            whileHover={{ x: 4 }}
+            className={cn(
+              "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-nunito font-semibold transition-all",
+              pathname === "/settings"
+                ? "bg-finstep-orange text-white shadow-md shadow-finstep-orange/20"
+                : "text-finstep-brown/70 hover:text-finstep-brown hover:bg-finstep-beige"
+            )}
+          >
+            <Settings className="w-4 h-4" />
+            Settings
+          </motion.div>
+        </Link>
+
+        <p className="px-3 text-xs font-nunito font-bold text-finstep-brown/60 uppercase tracking-wider mb-2 mt-3">
+          Quick Toggles
         </p>
 
         <div className="px-3 space-y-3 font-nunito">

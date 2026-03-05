@@ -1,13 +1,11 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useQuizStore } from "@/store/useQuizStore";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import {
   Select,
   SelectContent,
@@ -19,23 +17,15 @@ import {
   Target,
   AlertTriangle,
   BookOpen,
-  GripVertical,
-  Calculator,
-  Building2,
-  DollarSign,
-  Scale,
-  BarChart3,
-  Percent,
   Zap,
   Trophy,
-  FlaskConical,
-  Users,
+  ChevronRight,
   ArrowRight,
 } from "lucide-react";
-import { Difficulty, Section } from "@/types/question";
-import { allQuestions } from "@/lib/questions";
+import { Difficulty } from "@/types/question";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { DOMAINS } from "@/lib/navigation/domains";
 
 const container = {
   hidden: { opacity: 0 },
@@ -46,21 +36,6 @@ const item = {
   hidden: { opacity: 0, y: 16 },
   show: { opacity: 1, y: 0 },
 };
-
-const sectionConfigs: {
-  label: Section;
-  icon: typeof Calculator;
-  color: string;
-  gradient: string;
-}[] = [
-    { label: "Accounting", icon: Calculator, color: "text-amber-600", gradient: "from-amber-500/10 to-amber-600/5" },
-    { label: "EV vs Equity Value", icon: Building2, color: "text-orange-600", gradient: "from-orange-500/10 to-orange-600/5" },
-    { label: "Valuation", icon: DollarSign, color: "text-amber-600", gradient: "from-amber-500/10 to-amber-600/5" },
-    { label: "M&A", icon: Scale, color: "text-orange-600", gradient: "from-orange-500/10 to-orange-600/5" },
-    { label: "LBO", icon: BarChart3, color: "text-red-600", gradient: "from-red-500/10 to-red-600/5" },
-    { label: "Accretion/Dilution", icon: Percent, color: "text-rose-600", gradient: "from-rose-500/10 to-rose-600/5" },
-    { label: "Fit & Behavioral", icon: Users, color: "text-orange-600", gradient: "from-orange-500/10 to-orange-600/5" },
-  ];
 
 function getRankColor(accuracy: number) {
   if (accuracy >= 85) return "text-emerald-600";
@@ -83,45 +58,26 @@ export default function DashboardPage() {
     difficulty,
     setDifficulty,
     eliteMode,
-    dbAnalytics,
-    fetchDBAnalytics,
-    startQuiz,
+    progress,
+    getAccuracy,
+    getWeakestSection,
   } = useQuizStore();
 
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    fetchDBAnalytics();
-  }, [fetchDBAnalytics]);
-
-  const displayAccuracy = mounted ? dbAnalytics.overall.overallAccuracy : 0;
-
-  // Calculate weakest section from DB data
-  const displayWeakest = useMemo(() => {
-    console.log('[Dashboard] Current dbAnalytics:', dbAnalytics);
-    if (!mounted || dbAnalytics.sections.length === 0) return "N/A";
-    const sorted = [...dbAnalytics.sections].sort((a, b) => a.accuracy - b.accuracy);
-    return sorted[0]?.section || "N/A";
-  }, [mounted, dbAnalytics]);
-
-  const handleStartSectionQuiz = (section: Section) => {
-    startQuiz(section);
-    router.push("/quiz");
-  };
+  const accuracy = getAccuracy();
+  const weakest = getWeakestSection();
 
   return (
     <motion.div
       variants={container}
       initial="hidden"
       animate="show"
-      className="max-w-6xl mx-auto space-y-8 font-nunito text-finstep-brown"
+      className="max-w-6xl mx-auto space-y-8 font-nunito text-finstep-brown w-full min-w-0"
     >
       <motion.div variants={item} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-varela font-bold tracking-tight text-finstep-orange">
-              Welcome back{session?.user?.name ? `, ${session.user.name.split(' ')[0]}` : ""}
+              Welcome back{session?.user?.name ? `, ${session.user.name?.split(" ")[0] ?? ""}` : ""}
             </h1>
             {session?.user?.image && (
               <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-finstep-beige border border-finstep-brown/10 shadow-sm">
@@ -132,7 +88,9 @@ export default function DashboardPage() {
                   height={20}
                   className="rounded-full border border-finstep-orange/20"
                 />
-                <span className="text-[9px] font-nunito font-bold text-finstep-brown/40 uppercase tracking-tighter">Google</span>
+                <span className="text-[9px] font-nunito font-bold text-finstep-brown/40 uppercase tracking-tighter">
+                  Google
+                </span>
               </div>
             )}
           </div>
@@ -140,15 +98,13 @@ export default function DashboardPage() {
             Track your progress and start training
           </p>
         </div>
-        <Select
-          value={difficulty}
-          onValueChange={(v) => setDifficulty(v as Difficulty)}
-        >
+        <Select value={difficulty} onValueChange={(v) => setDifficulty(v as Difficulty)}>
           <SelectTrigger className="w-44 shadow-sm">
-            <SelectValue />
+            <SelectValue placeholder="Difficulty" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="Beginner">Beginner</SelectItem>
+            <SelectItem value="Intermediate">Intermediate</SelectItem>
             <SelectItem value="Advanced">Advanced</SelectItem>
             <SelectItem value="Elite">Elite</SelectItem>
           </SelectContent>
@@ -156,239 +112,115 @@ export default function DashboardPage() {
       </motion.div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <motion.div variants={item}>
-          <Card className="shadow-sm hover:shadow-md transition-shadow border-finstep-brown/10 bg-card/80 backdrop-blur-sm">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500/10 to-amber-600/5 flex items-center justify-center">
-                  <BookOpen className="w-5 h-5 text-amber-600" />
+        {[
+          { icon: BookOpen, label: "Questions Done", value: progress.totalCompleted, color: "from-amber-500/10 to-amber-600/5", iconColor: "text-amber-600" },
+          { icon: Target, label: "Accuracy", value: `${accuracy}%`, color: "from-finstep-orange/10 to-finstep-orange/5", iconColor: "text-finstep-orange" },
+          { icon: AlertTriangle, label: "Weakest Section", value: weakest, color: "from-red-500/10 to-red-600/5", iconColor: "text-red-600" },
+          { icon: Trophy, label: "Current Rank", value: getRankLabel(accuracy), color: "from-orange-500/10 to-orange-600/5", iconColor: getRankColor(accuracy) },
+        ].map((stat) => (
+          <motion.div key={stat.label} variants={item}>
+            <Card className="shadow-sm hover:shadow-md transition-shadow border-finstep-brown/10 bg-card/80 backdrop-blur-sm">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-3">
+                  <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
+                    <stat.icon className={`w-5 h-5 ${stat.iconColor}`} />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-varela font-bold tabular-nums text-finstep-brown">
+                      {stat.value}
+                    </p>
+                    <p className="text-xs text-finstep-brown/60 font-semibold uppercase tracking-wider">
+                      {stat.label}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-2xl font-varela font-bold tabular-nums text-finstep-brown">
-                    {mounted ? dbAnalytics.overall.totalQuestionsDone : 0}
-                  </p>
-                  <p className="text-xs text-finstep-brown/60 font-semibold uppercase tracking-wider">
-                    Questions Done
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div variants={item}>
-          <Card className="shadow-sm hover:shadow-md transition-shadow border-finstep-brown/10 bg-card/80 backdrop-blur-sm">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-finstep-orange/10 to-finstep-orange/5 flex items-center justify-center">
-                  <Target className="w-5 h-5 text-finstep-orange" />
-                </div>
-                <div>
-                  <p className="text-2xl font-varela font-bold tabular-nums text-finstep-brown">{mounted ? dbAnalytics.overall.overallAccuracy : 0}%</p>
-                  <p className="text-xs text-finstep-brown/60 font-semibold uppercase tracking-wider">Accuracy</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div variants={item}>
-          <Card className="shadow-sm hover:shadow-md transition-shadow border-finstep-brown/10 bg-card/80 backdrop-blur-sm">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-red-500/10 to-red-600/5 flex items-center justify-center">
-                  <AlertTriangle className="w-5 h-5 text-red-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold truncate max-w-[120px] text-finstep-brown">
-                    {displayWeakest}
-                  </p>
-                  <p className="text-xs text-finstep-brown/60 font-semibold uppercase tracking-wider">
-                    Weakest Section
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div variants={item}>
-          <Card className="shadow-sm hover:shadow-md transition-shadow border-finstep-brown/10 bg-card/80 backdrop-blur-sm">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-500/10 to-orange-600/5 flex items-center justify-center">
-                  <Trophy className="w-5 h-5 text-orange-600" />
-                </div>
-                <div>
-                  <p className={`text-sm font-bold ${getRankColor(displayAccuracy)}`}>
-                    {getRankLabel(displayAccuracy)}
-                  </p>
-                  <p className="text-xs text-finstep-brown/60 font-semibold uppercase tracking-wider">Current Rank</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
       </div>
 
       <motion.div variants={item}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="shadow-sm border-finstep-brown/10 bg-card/80 backdrop-blur-sm md:col-span-2">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between mb-5">
-                <h3 className="font-varela font-bold text-xl text-finstep-brown">Quick Start</h3>
-                {eliteMode && (
-                  <Badge
-                    variant="outline"
-                    className="text-amber-600 border-amber-500/30 bg-amber-50"
-                  >
-                    <Zap className="w-3 h-3 mr-1" />
-                    Elite
-                  </Badge>
-                )}
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <Button
-                  onClick={() => router.push("/quiz")}
-                  className="h-auto py-4 flex-col gap-2 font-varela font-bold bg-finstep-orange text-white hover:brightness-110 shadow-lg shadow-finstep-orange/20 transition-all transform hover:-translate-y-0.5"
-                  size="lg"
-                >
-                  <BookOpen className="w-5 h-5" />
-                  <span className="text-xs font-nunito font-normal opacity-90">30 / 400</span>
-                  IB Quiz
-                </Button>
-                <Button
-                  onClick={() => router.push("/accounting-drag")}
-                  variant="outline"
-                  className="h-auto py-4 flex-col gap-2 shadow-sm border-finstep-brown/10 bg-finstep-beige/50 text-finstep-brown hover:bg-finstep-orange/10 hover:border-finstep-orange hover:text-finstep-orange transition-all"
-                  size="lg"
-                >
-                  <GripVertical className="w-5 h-5 text-finstep-lightbrown" />
-                  <span className="text-xs font-normal text-finstep-brown/60">Interactive</span>
-                  Drag & Drop
-                </Button>
-                <Button
-                  onClick={() => router.push("/simulation")}
-                  variant="outline"
-                  className="h-auto py-4 flex-col gap-2 shadow-sm border-finstep-brown/10 bg-finstep-beige/50 text-finstep-brown hover:bg-finstep-orange/10 hover:border-finstep-orange hover:text-finstep-orange transition-all"
-                  size="lg"
-                >
-                  <FlaskConical className="w-5 h-5 text-finstep-lightbrown" />
-                  <span className="text-xs font-normal text-finstep-brown/60">Learn</span>
-                  3-Stmt Sim
-                </Button>
-                <Button
-                  onClick={() => router.push("/dcf")}
-                  variant="outline"
-                  className="h-auto py-4 flex-col gap-2 shadow-sm border-finstep-brown/10 bg-finstep-beige/50 text-finstep-brown hover:bg-finstep-orange/10 hover:border-finstep-orange hover:text-finstep-orange transition-all"
-                  size="lg"
-                >
-                  <Calculator className="w-5 h-5 text-finstep-lightbrown" />
-                  <span className="text-xs font-normal text-finstep-brown/60">Valuation</span>
-                  DCF Model
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-sm border-finstep-brown/10 bg-card/80 backdrop-blur-sm">
-            <CardContent className="pt-6">
-              <h3 className="font-varela font-bold text-lg text-finstep-brown mb-4">Recent Results</h3>
-              {!mounted || dbAnalytics.recentResults.length === 0 ? (
-                <p className="text-sm text-finstep-brown/60">
-                  {mounted ? "No quizzes completed yet." : "Loading results..."}
-                </p>
-              ) : (
-                <div className="space-y-2.5">
-                  {dbAnalytics.recentResults.map((result) => (
-                    <div
-                      key={result.id}
-                      className="flex items-center justify-between text-sm"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="text-finstep-brown/70 font-semibold text-xs truncate max-w-[120px]">
-                          {result.section}
-                        </span>
-                        <Badge variant="secondary" className="text-[10px] px-1.5 bg-finstep-beige text-finstep-lightbrown border-none hover:bg-finstep-beige">
-                          {result.difficulty}
-                        </Badge>
-                      </div>
-                      <span className={`font-varela font-bold tabular-nums ${getRankColor(result.accuracy)}`}>
-                        {mounted ? `${result.accuracy}%` : "0%"}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+        <h2 className="font-varela font-bold text-xl text-finstep-brown mb-4 flex items-center gap-2">
+          Explore by Domain
+          {eliteMode && (
+            <Badge variant="outline" className="text-amber-600 border-amber-500/30 bg-amber-50">
+              <Zap className="w-3 h-3 mr-1" />
+              Elite
+            </Badge>
+          )}
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          {DOMAINS.map((domain) => (
+            <motion.div
+              key={domain.id}
+              variants={item}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            >
+              <Card
+                className="shadow-sm border-border/40 hover:shadow-xl hover:border-finstep-orange/30 transition-all cursor-pointer group overflow-hidden h-full"
+                onClick={() => router.push(domain.landingHref)}
+              >
+                <div className={`h-1.5 bg-gradient-to-r ${domain.color}`} />
+                <CardContent className="pt-6 pb-6">
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${domain.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-md`}>
+                    <domain.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="font-varela font-bold text-finstep-brown dark:text-foreground group-hover:text-finstep-orange transition-colors">
+                    {domain.label}
+                  </h3>
+                  <p className="text-xs text-finstep-brown/60 dark:text-muted-foreground mt-1 line-clamp-2">
+                    {domain.description}
+                  </p>
+                  <div className="flex items-center gap-1 mt-3 text-finstep-orange text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span>Explore</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
         </div>
       </motion.div>
 
       <motion.div variants={item}>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-varela font-bold text-finstep-brown">Sections</h2>
-          <span className="text-xs text-finstep-brown/60 font-semibold uppercase tracking-wider">
-            {allQuestions.length} total questions
-          </span>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {sectionConfigs.map((section) => {
-            const sectionData = dbAnalytics.sections.find(s => s.section === section.label);
-            const sectionAcc = sectionData ? sectionData.accuracy : 0;
-            const questionCountInPool = allQuestions.filter(
-              (q) => q.section === section.label
-            ).length;
-
-            return (
-              <motion.div key={section.label} whileHover={{ y: -3, transition: { duration: 0.2 } }}>
-                <Card className="shadow-sm hover:shadow-lg transition-all border-finstep-brown/10 bg-card/80 backdrop-blur-sm overflow-hidden group">
-                  <div className={`h-1 bg-gradient-to-r from-finstep-orange to-finstep-lightbrown opacity-0 group-hover:opacity-100 transition-opacity`} />
-                  <CardHeader className="pb-2 pt-5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${section.gradient} flex items-center justify-center`}>
-                          <section.icon className={`w-4 h-4 ${section.color}`} />
-                        </div>
-                        <CardTitle className="text-sm font-varela font-bold text-finstep-brown">
-                          {section.label}
-                        </CardTitle>
-                      </div>
-                      <Badge variant="secondary" className="text-[10px] px-1.5 bg-finstep-beige text-finstep-brown border-none hover:bg-finstep-beige">
-                        {questionCountInPool}
+        <Card className="shadow-sm border-finstep-brown/10 bg-card/80 backdrop-blur-sm">
+          <CardContent className="pt-6">
+            <h3 className="font-varela font-bold text-lg text-finstep-brown mb-4">Recent Results</h3>
+            {(progress?.quizHistory?.length ?? 0) === 0 ? (
+              <p className="text-sm text-finstep-brown/60">No quizzes completed yet.</p>
+            ) : (
+              <div className="space-y-2.5">
+                {(progress?.quizHistory ?? []).slice(-4).reverse().map((result) => (
+                  <div key={result.id} className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <span className="text-finstep-brown/70 font-semibold text-xs truncate max-w-[120px]">
+                        {result.section}
+                      </span>
+                      <Badge variant="secondary" className="text-[10px] px-1.5 bg-finstep-beige text-finstep-lightbrown border-none hover:bg-finstep-beige">
+                        {result.difficulty}
                       </Badge>
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div>
-                        <div className="flex justify-between text-xs mb-1.5">
-                          <span className="text-finstep-brown/60">Accuracy</span>
-                          <span className="font-varela font-bold tabular-nums text-finstep-brown">{mounted ? sectionAcc : 0}%</span>
-                        </div>
-                        <Progress value={mounted ? sectionAcc : 0} className="h-2 bg-finstep-beige [&>div]:bg-finstep-orange" />
-                      </div>
-                      {mounted && sectionData && (
-                        <p className="text-xs text-finstep-brown/60">
-                          {sectionData.correctAnswers}/{sectionData.questionsDone} correct
-                        </p>
-                      )}
-                      <Button
-                        onClick={() => handleStartSectionQuiz(section.label)}
-                        variant="ghost"
-                        size="sm"
-                        className="w-full group/btn text-finstep-brown hover:text-finstep-orange hover:bg-finstep-beige"
-                      >
-                        Practice
-                        <ArrowRight className="w-3 h-3 ml-1 group-hover/btn:translate-x-1 transition-transform" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            );
-          })}
-        </div>
+                    <span className={`font-varela font-bold tabular-nums ${getRankColor(result.accuracy)}`}>
+                      {result.accuracy}%
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {(progress?.quizHistory?.length ?? 0) > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-4 w-full"
+                onClick={() => router.push("/quiz")}
+              >
+                <ArrowRight className="w-4 h-4 mr-2" />
+                Continue to Quiz
+              </Button>
+            )}
+          </CardContent>
+        </Card>
       </motion.div>
     </motion.div>
   );

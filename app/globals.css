@@ -10,35 +10,35 @@
 
 @layer base {
   :root {
-    --finstep-orange: 32 75% 61%;
-    /* #E5A152 */
-    --finstep-brown: 19 33% 36%;
-    /* #7A513E */
-    --finstep-lightbrown: 29 66% 56%;
-    /* #D98C44 */
-    --finstep-beige: 40 46% 96%;
-    /* #F9F6F0 */
+    --finstep-orange: 26 65% 54%;
+    /* Amber-brown accent, less orange */
+    --finstep-brown: 18 42% 28%;
+    /* Dark chocolate brown */
+    --finstep-lightbrown: 22 48% 46%;
+    /* Medium brown, less orange */
+    --finstep-beige: 38 40% 96%;
+    /* Warm beige */
 
     --background: var(--finstep-beige);
     --foreground: var(--finstep-brown);
-    --card: 40 46% 98%;
+    --card: 38 40% 98%;
     /* Even warmer/softer beige for cards */
     --card-foreground: var(--finstep-brown);
-    --popover: 40 46% 98%;
+    --popover: 38 40% 98%;
     --popover-foreground: var(--finstep-brown);
     --primary: var(--finstep-orange);
-    --primary-foreground: 40 46% 96%;
-    --secondary: 40 30% 92%;
+    --primary-foreground: 38 40% 96%;
+    --secondary: 38 28% 92%;
     --secondary-foreground: var(--finstep-brown);
-    --muted: 40 30% 92%;
-    --muted-foreground: 19 15% 50%;
-    --accent: 40 30% 92%;
+    --muted: 38 28% 92%;
+    --muted-foreground: 18 25% 45%;
+    --accent: 38 28% 92%;
     --accent-foreground: var(--finstep-brown);
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 19 25% 90%;
-    /* Warm subtle border instead of cold gray */
-    --input: 19 25% 90%;
+    --border: 18 22% 88%;
+    /* Warm subtle border */
+    --input: 18 22% 88%;
     --ring: var(--finstep-orange);
     --chart-1: 221 83% 53%;
     --chart-2: 160 60% 45%;
@@ -51,33 +51,33 @@
   }
 
   .dark {
-    --finstep-orange: 32 75% 61%;
-    /* Keep orange vibrant */
-    --finstep-brown: 40 46% 96%;
+    --finstep-orange: 26 65% 58%;
+    /* Amber-brown accent */
+    --finstep-brown: 38 40% 94%;
     /* Invert: Brown text becomes Beige text */
-    --finstep-lightbrown: 29 80% 65%;
-    /* Brighten slightly for contrast */
-    --finstep-beige: 19 30% 12%;
-    /* Invert: Beige background becomes Dark Warm gray/brown */
+    --finstep-lightbrown: 22 55% 62%;
+    /* Lighter brown for contrast */
+    --finstep-beige: 18 28% 12%;
+    /* Dark warm brown background */
 
     --background: var(--finstep-beige);
     --foreground: var(--finstep-brown);
-    --card: 19 30% 16%;
+    --card: 18 28% 16%;
     --card-foreground: var(--finstep-brown);
-    --popover: 19 30% 16%;
+    --popover: 18 28% 16%;
     --popover-foreground: var(--finstep-brown);
     --primary: var(--finstep-orange);
-    --primary-foreground: 19 30% 12%;
-    --secondary: 19 30% 20%;
+    --primary-foreground: 18 28% 12%;
+    --secondary: 18 28% 20%;
     --secondary-foreground: var(--finstep-brown);
-    --muted: 19 30% 20%;
-    --muted-foreground: 19 10% 65%;
-    --accent: 19 30% 20%;
+    --muted: 18 28% 20%;
+    --muted-foreground: 18 15% 65%;
+    --accent: 18 28% 20%;
     --accent-foreground: var(--finstep-brown);
     --destructive: 0 63% 40%;
     --destructive-foreground: 0 0% 98%;
-    --border: 19 30% 22%;
-    --input: 19 30% 22%;
+    --border: 18 28% 22%;
+    --input: 18 28% 22%;
     --ring: var(--finstep-orange);
     --chart-1: var(--finstep-orange);
     --chart-2: 160 60% 45%;
@@ -127,11 +127,11 @@
   }
 
   .gradient-primary {
-    background: linear-gradient(135deg, hsl(32, 75%, 61%), hsl(29, 66%, 56%));
+    background: linear-gradient(135deg, hsl(26, 65%, 54%), hsl(22, 48%, 46%));
   }
 
   .gradient-text {
-    background: linear-gradient(135deg, hsl(32, 75%, 61%), hsl(29, 66%, 56%));
+    background: linear-gradient(135deg, hsl(26, 65%, 54%), hsl(22, 48%, 46%));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

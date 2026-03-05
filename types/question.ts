@@ -7,9 +7,15 @@ export type Section =
   | "M&A"
   | "LBO"
   | "Accretion/Dilution"
-  | "Fit & Behavioral";
+  | "Fit & Behavioral"
+  | "Portfolio Theory"
+  | "Asset Allocation"
+  | "Risk Management"
+  | "Investment Strategies"
+  | "Fixed Income"
+  | "Equity Research";
 
-export type Difficulty = "Beginner" | "Advanced" | "Elite";
+export type Difficulty = "Beginner" | "Intermediate" | "Advanced" | "Elite";
 
 export interface IbQuestion {
   category: string;
@@ -28,12 +34,22 @@ export interface Question {
   explanation: string;
 }
 
+export type DragDropZone =
+  | "Income Statement"
+  | "Balance Sheet"
+  | "Cash Flow Statement"
+  | "CFO"
+  | "CFI"
+  | "CFF";
+
 export interface DragQuestion {
   id: string;
   lineItem: string;
-  correctAnswer: "Income Statement" | "Cash Flow Statement" | "Balance Sheet";
+  correctAnswer: DragDropZone;
   explanation: string;
   difficulty: Difficulty;
+  hint?: string;
+  isTricky?: boolean;
 }
 
 export type Rank = "Not Ready" | "Boutique Ready" | "MM Ready" | "EB/BB Ready";

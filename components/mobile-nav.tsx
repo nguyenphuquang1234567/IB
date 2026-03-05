@@ -14,26 +14,31 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import {
-  TrendingUp,
   LayoutDashboard,
-  BookOpen,
-  GripVertical,
   LogOut,
   Menu,
   Zap,
   FlaskConical,
   Sun,
   Moon,
+  FileSpreadsheet,
+  PieChart,
+  Briefcase,
+  Search,
+  Settings,
 } from "lucide-react";
+import { FinstepLogo } from "@/components/finstep-logo";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/quiz", label: "Quiz Engine", icon: BookOpen },
-  { href: "/accounting-drag", label: "Drag & Drop", icon: GripVertical },
-  { href: "/simulation", label: "3-Statement Sim", icon: FlaskConical },
-  { href: "/dcf", label: "DCF Model", icon: FlaskConical },
+  { href: "/corporate-finance", label: "Corporate Finance", icon: FlaskConical },
+  { href: "/accounting-hub", label: "Accounting", icon: FileSpreadsheet },
+  { href: "/ib", label: "Investment Banking", icon: Briefcase },
+  { href: "/asset-management", label: "Asset Management", icon: PieChart },
+  { href: "/equity-research", label: "Equity Research", icon: Search },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function MobileNav() {
@@ -45,10 +50,7 @@ export function MobileNav() {
     <div className="xl:hidden sticky top-0 z-50 glass border-b border-border/40">
       <div className="flex items-center justify-between p-4">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center shadow-md shadow-primary/20">
-            <TrendingUp className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-bold">IB400</span>
+          <FinstepLogo size="sm" showText={true} />
         </Link>
 
         <Sheet>
@@ -60,7 +62,7 @@ export function MobileNav() {
           <SheetContent side="right" className="w-72">
             <nav className="flex flex-col gap-1 mt-8">
               {navItems.map((item) => {
-                const isActive = pathname === item.href;
+                const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname?.startsWith(item.href + "/"));
                 return (
                   <SheetClose key={item.href} asChild>
                     <Link

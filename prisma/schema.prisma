@@ -129,3 +129,65 @@ model QuizAttempt {
 
   @@index([userId])
 }
+
+model BudgetCompany {
+  id       String   @id @default(cuid())
+  name     String
+  industry String?
+  budgets  Budget[]
+  actuals  BudgetActual[]
+  forecasts BudgetForecast[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Budget {
+  id          String   @id @default(cuid())
+  companyId   String
+  company     BudgetCompany @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  year        Int
+  revenue     Float
+  cost        Float
+  opex        Float
+  capex       Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([companyId, year])
+  @@index([companyId])
+}
+
+model BudgetActual {
+  id        String   @id @default(cuid())
+  companyId String
+  company   BudgetCompany @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  year      Int
+  revenue   Float
+  cost      Float
+  opex      Float
+  capex     Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([companyId, year])
+  @@index([companyId])
+}
+
+model BudgetForecast {
+  id             String   @id @default(cuid())
+  userId         String?
+  companyId      String?
+  company        BudgetCompany? @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  assumptions    Json
+  forecastResults Json
+  scenarioName   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([companyId])
+}
