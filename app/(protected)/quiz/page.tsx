@@ -23,7 +23,9 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { fitBehavioralQuestions } from "@/lib/questions/fit-behavioral";
-import { Question } from "@/types/question";
+import { allQuestions } from "@/lib/questions";
+import { Question, Section } from "@/types/question";
+import { Calculator, Building2, DollarSign, Scale, BarChart3, Percent, Users } from "lucide-react";
 
 const TOTAL_IB400 = 400;
 
@@ -62,16 +64,43 @@ function getRankLabel(accuracy: number) {
   return "Not Ready";
 }
 
-type QuizMode = "select" | "mc";
+type QuizMode = "select" | "section_select" | "mc";
+
+const sectionConfigs: {
+  label: Section;
+  icon: typeof Calculator;
+  color: string;
+  gradient: string;
+}[] = [
+    { label: "Accounting", icon: Calculator, color: "text-amber-600", gradient: "from-amber-500/10 to-amber-600/5" },
+    { label: "EV vs Equity Value", icon: Building2, color: "text-orange-600", gradient: "from-orange-500/10 to-orange-600/5" },
+    { label: "Valuation", icon: DollarSign, color: "text-amber-600", gradient: "from-amber-500/10 to-amber-600/5" },
+    { label: "M&A", icon: Scale, color: "text-orange-600", gradient: "from-orange-500/10 to-orange-600/5" },
+    { label: "LBO", icon: BarChart3, color: "text-red-600", gradient: "from-red-500/10 to-red-600/5" },
+    { label: "Accretion/Dilution", icon: Percent, color: "text-rose-600", gradient: "from-rose-500/10 to-rose-600/5" },
+    { label: "Fit & Behavioral", icon: Users, color: "text-orange-600", gradient: "from-orange-500/10 to-orange-600/5" },
+  ];
 
 export default function QuizPage() {
   const router = useRouter();
   const [mode, setMode] = useState<QuizMode>("select");
+  const [selectedSection, setSelectedSection] = useState<Section>("Fit & Behavioral");
   const [questions, setQuestions] = useState<Question[]>(fitBehavioralQuestions);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [revealed, setRevealed] = useState<Record<string, boolean>>({});
   const [finished, setFinished] = useState(false);
+
+  const handleStartSection = useCallback((section: Section) => {
+    const sectionQuestions = allQuestions.filter(q => q.section === section);
+    setSelectedSection(section);
+    setQuestions(shuffleArray(sectionQuestions));
+    setCurrentIndex(0);
+    setAnswers({});
+    setRevealed({});
+    setFinished(false);
+    setMode("mc");
+  }, []);
 
   const question = questions[currentIndex];
   const userAnswer = question ? answers[question.id] : undefined;
@@ -112,7 +141,8 @@ export default function QuizPage() {
   }, [currentIndex, questions.length]);
 
   const handleShuffle = useCallback(() => {
-    setQuestions(shuffleArray(fitBehavioralQuestions));
+    const sectionQuestions = allQuestions.filter(q => q.section === selectedSection);
+    setQuestions(shuffleArray(sectionQuestions));
     setCurrentIndex(0);
     setAnswers({});
     setRevealed({});
@@ -132,9 +162,9 @@ export default function QuizPage() {
   }, [handleReset]);
 
   const randomTip = useMemo(() => {
-    const tips = TIPS["Fit & Behavioral"];
+    const tips = TIPS[selectedSection] || TIPS["Fit & Behavioral"];
     return tips[Math.floor(Math.random() * tips.length)];
-  }, [currentIndex]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentIndex, selectedSection]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // === MODE SELECTION SCREEN ===
   if (mode === "select") {
@@ -159,7 +189,7 @@ export default function QuizPage() {
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Card
                 className="cursor-pointer shadow-sm border-border/40 hover:border-primary/40 hover:shadow-md transition-all h-full group"
-                onClick={() => setMode("mc")}
+                onClick={() => setMode("section_select")}
               >
                 <CardContent className="pt-8 pb-8 flex flex-col items-center text-center space-y-4">
                   <div className="w-16 h-16 rounded-2xl gradient-primary flex items-center justify-center shadow-lg shadow-primary/20 group-hover:shadow-primary/40 transition-shadow">
@@ -212,6 +242,70 @@ export default function QuizPage() {
     );
   }
 
+  if (mode === "section_select") {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight flex items-center gap-3">
+                <ListChecks className="w-6 h-6 text-primary" />
+                Select a Section
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Choose a specific domain to practice your multiple-choice questions
+              </p>
+            </div>
+            <Button variant="outline" size="sm" onClick={() => setMode("select")} className="hidden sm:flex">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {sectionConfigs.map((section, index) => {
+              const questionCount = allQuestions.filter(q => q.section === section.label).length;
+              return (
+                <motion.div
+                  key={section.label}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.2, delay: index * 0.05 }}
+                  whileHover={{ y: -4 }}
+                >
+                  <Card
+                    className="cursor-pointer shadow-sm hover:shadow-md transition-all h-full group border-border/40 hover:border-primary/30"
+                    onClick={() => handleStartSection(section.label)}
+                  >
+                    <CardContent className="p-6 flex flex-col items-center text-center space-y-4">
+                      <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm transition-transform group-hover:scale-110", `bg-gradient-to-br ${section.gradient}`)}>
+                        <section.icon className={cn("w-7 h-7", section.color)} />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-base leading-tight">{section.label}</h3>
+                        <Badge variant="secondary" className="mt-2 text-[10px] px-2 py-0">
+                          {questionCount} questions
+                        </Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          <Button variant="outline" className="w-full mt-6 sm:hidden" onClick={() => setMode("select")}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Modes
+          </Button>
+        </motion.div>
+      </div>
+    );
+  }
+
   // === FINISHED SCREEN (MC) ===
   if (finished) {
     return (
@@ -239,9 +333,9 @@ export default function QuizPage() {
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-                <Button variant="outline" onClick={handleBackToSelect}>
+                <Button variant="outline" onClick={() => setMode("section_select")}>
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Quiz Selection
+                  Other Sections
                 </Button>
                 <Button onClick={handleReset}>
                   <RotateCcw className="w-4 h-4 mr-2" />
@@ -268,21 +362,21 @@ export default function QuizPage() {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-primary shrink-0" />
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                IB 400 — Fit & Behavioral
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground truncate max-w-[200px] sm:max-w-none">
+                IB 400 — {selectedSection}
               </h1>
             </div>
-            <p className="text-xs sm:text-sm text-muted-foreground font-medium">✨ Master your behavioral questions</p>
+            <p className="text-xs sm:text-sm text-muted-foreground font-medium">✨ Master your technical & qualitative skills</p>
           </div>
 
           <Button
             variant="outline"
             size="sm"
-            onClick={handleBackToSelect}
+            onClick={() => setMode("section_select")}
             className="w-full sm:w-auto h-9 text-xs font-semibold border-border/60 hover:bg-muted/50"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Selection
+            Sections
           </Button>
         </div>
 

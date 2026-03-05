@@ -215,9 +215,10 @@ export const valuationQuestions: Question[] = [
     id: "val-15",
     section: "Valuation",
     difficulty: "Advanced",
-    type: "numeric",
+    type: "mcq",
     question: "You are performing a comparable company analysis. The median EV/EBITDA multiple of the peer set is 11.0x. The target company has LTM EBITDA of $220M. What is the implied enterprise value in millions?",
-    correctAnswer: "2420",
+    choices: ["$2,100", "$2,200", "$2,420", "$2,500"],
+    correctAnswer: "$2,420",
     explanation: "Implied EV = EBITDA × Multiple = $220M × 11.0x = $2,420M. In a trading comps analysis, you apply the selected peer multiple to the target's financial metric to derive an implied valuation. The median is often preferred to the mean to reduce the impact of outliers in the peer set."
   },
   {

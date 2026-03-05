@@ -638,9 +638,10 @@ export const accountingQuestions: Question[] = [
     id: "acc-46",
     section: "Accounting",
     difficulty: "Elite",
-    type: "numeric",
+    type: "mcq",
     question: "An acquired company has $60M of identifiable intangible assets (customer relationships) with a 10-year useful life, assigned during purchase price allocation. Assuming straight-line amortization and a 25% tax rate, what is the annual after-tax impact on Net Income from this amortization (in millions)?",
-    correctAnswer: "4.5",
+    choices: ["$3.0", "$4.5", "$6.0", "$7.5"],
+    correctAnswer: "$4.5",
     explanation: "Annual amortization = $60M / 10 = $6M. After-tax impact = $6M × (1 − 0.25) = $4.5M reduction in Net Income per year."
   },
   {
@@ -662,9 +663,10 @@ export const accountingQuestions: Question[] = [
     id: "acc-48",
     section: "Accounting",
     difficulty: "Elite",
-    type: "numeric",
+    type: "mcq",
     question: "A company acquires a target for $1,200M, funded by 60% cash and 40% new debt. The target has $400M in assets (at fair value) and $150M in liabilities. What is the goodwill created from this acquisition (in millions)?",
-    correctAnswer: "950",
+    choices: ["$800", "$950", "$1,050", "$1,200"],
+    correctAnswer: "$950",
     explanation: "Net Identifiable Assets at Fair Value = $400M − $150M = $250M. Goodwill = Purchase Price − Fair Value of Net Identifiable Assets = $1,200M − $250M = $950M. The funding mix does not affect the goodwill calculation."
   },
   {

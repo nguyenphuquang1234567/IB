@@ -185,8 +185,9 @@ export const accretionDilutionQuestions: Question[] = [
     id: "ad-13",
     section: "Accretion/Dilution",
     difficulty: "Advanced",
-    type: "numeric",
+    type: "mcq",
     question: "An acquirer has 200M shares outstanding and $800M in net income (EPS = $4.00). It acquires a target with $100M in net income for $2B in an all-stock deal. The acquirer's stock price is $50. How many new shares are issued (in millions)?",
+    choices: ["30", "35", "40", "45"],
     correctAnswer: "40",
     explanation: "New shares issued = Purchase Price / Acquirer's Share Price = $2,000M / $50 = 40M shares. The new total share count would be 200M + 40M = 240M shares. Pro forma net income = $800M + $100M = $900M. Pro forma EPS = $900M / 240M = $3.75, which is dilutive compared to the standalone $4.00."
   },
@@ -194,27 +195,30 @@ export const accretionDilutionQuestions: Question[] = [
     id: "ad-14",
     section: "Accretion/Dilution",
     difficulty: "Advanced",
-    type: "numeric",
+    type: "mcq",
     question: "An acquirer has an EPS of $5.00 and a P/E ratio of 20x. It acquires a target at a P/E of 16x in an all-stock deal. The target has net income of $50M and the acquirer has net income of $500M with 100M shares outstanding. What is the pro forma EPS (round to two decimal places)?",
-    correctAnswer: "5.09",
+    choices: ["$4.95", "$5.00", "$5.09", "$5.15"],
+    correctAnswer: "$5.09",
     explanation: "Acquirer share price = $5.00 × 20 = $100. Target equity value at 16x P/E = $50M × 16 = $800M. New shares issued = $800M / $100 = 8M shares. Pro forma shares = 100M + 8M = 108M. Pro forma net income = $500M + $50M = $550M. Pro forma EPS = $550M / 108M = $5.09. The deal is accretive ($5.09 > $5.00) because the acquirer's P/E (20x) is higher than the target's acquisition P/E (16x)."
   },
   {
     id: "ad-15",
     section: "Accretion/Dilution",
     difficulty: "Advanced",
-    type: "numeric",
+    type: "mcq",
     question: "An acquirer funds a $600M acquisition entirely with new debt at a 6% interest rate. The tax rate is 25%. The target contributes $50M in pre-tax income. What is the net accretion/dilution to the acquirer's net income from this deal (in $M)? Enter positive for accretion, negative for dilution.",
-    correctAnswer: "10.5",
+    choices: ["+$8.0M", "+$10.5M", "-$10.5M", "+$12.0M"],
+    correctAnswer: "+$10.5M",
     explanation: "Target's after-tax income contribution = $50M × (1 - 0.25) = $37.5M. After-tax interest expense on acquisition debt = $600M × 6% × (1 - 0.25) = $600M × 6% × 0.75 = $27M. Net income impact = $37.5M - $27M = +$10.5M (accretive). Since this is an all-cash deal with no new shares, the full $10.5M flows through to EPS accretion."
   },
   {
     id: "ad-16",
     section: "Accretion/Dilution",
     difficulty: "Advanced",
-    type: "numeric",
+    type: "mcq",
     question: "A target has $400M in identifiable net assets at fair value and is acquired for $650M. Of the excess, $100M is allocated to identifiable intangible assets with a 10-year useful life. What is the annual amortization of these intangibles (in $M)?",
-    correctAnswer: "10",
+    choices: ["$5M", "$10M", "$15M", "$20M"],
+    correctAnswer: "$10M",
     explanation: "The identifiable intangible assets of $100M are amortized over their 10-year useful life on a straight-line basis: $100M / 10 = $10M per year. The remaining excess of $650M - $400M - $100M = $150M is recorded as goodwill, which is not amortized under US GAAP but tested for impairment annually."
   },
   {
@@ -236,9 +240,10 @@ export const accretionDilutionQuestions: Question[] = [
     id: "ad-18",
     section: "Accretion/Dilution",
     difficulty: "Elite",
-    type: "numeric",
+    type: "mcq",
     question: "An acquirer has 150M shares, $3.00 EPS, and a $60 stock price. It buys a target with $75M net income for $1.5B (50% cash at 5% interest, 50% stock). Tax rate is 25%. Ignoring synergies and PPA adjustments, what is the pro forma EPS (round to two decimal places)?",
-    correctAnswer: "3.06",
+    choices: ["$2.95", "$3.00", "$3.06", "$3.12"],
+    correctAnswer: "$3.06",
     explanation: "Acquirer net income = 150M × $3.00 = $450M. Cash portion = $750M, stock portion = $750M. New shares issued = $750M / $60 = 12.5M. After-tax interest on new debt = $750M × 5% × (1 - 0.25) = $28.125M. Pro forma net income = $450M + $75M - $28.125M = $496.875M. Pro forma shares = 150M + 12.5M = 162.5M. Pro forma EPS = $496.875M / 162.5M = $3.06. The deal is slightly accretive ($3.06 > $3.00) because the target's earnings contribution exceeds the combined dilution from new shares and after-tax interest expense."
   },
   {
@@ -260,9 +265,10 @@ export const accretionDilutionQuestions: Question[] = [
     id: "ad-20",
     section: "Accretion/Dilution",
     difficulty: "Elite",
-    type: "numeric",
+    type: "mcq",
     question: "An acquirer (EPS $4.00, 250M shares, P/E 22x) acquires a target at 18x P/E with $80M net income in an all-stock deal. After $40M in pre-tax annual cost synergies (25% tax rate), what is the pro forma EPS (round to two decimal places)?",
-    correctAnswer: "4.17",
+    choices: ["$4.05", "$4.12", "$4.17", "$4.25"],
+    correctAnswer: "$4.17",
     explanation: "Acquirer share price = $4.00 × 22 = $88. Acquirer net income = $4.00 × 250M = $1,000M. Target equity value = $80M × 18 = $1,440M. New shares issued = $1,440M / $88 = 16.36M. After-tax synergies = $40M × (1 - 0.25) = $30M. Pro forma net income = $1,000M + $80M + $30M = $1,110M. Pro forma shares = 250M + 16.36M = 266.36M. Pro forma EPS = $1,110M / 266.36M = $4.17. The deal is accretive ($4.17 > $4.00) because the acquirer's higher P/E (22x vs 18x) combined with synergies more than offsets the share dilution."
   }
 ];

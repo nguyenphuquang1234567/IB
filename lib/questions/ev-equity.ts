@@ -185,9 +185,10 @@ export const evEquityQuestions: Question[] = [
     id: "ev-13",
     section: "EV vs Equity Value",
     difficulty: "Advanced",
-    type: "numeric",
+    type: "mcq",
     question: "A company has 100M basic shares at $50/share, 5M in-the-money options with a $30 strike price (current share price is $50), $2B in debt, $500M in cash, $200M in preferred stock, and $100M in minority interest. Using the treasury stock method for options, what is the enterprise value in millions?",
-    correctAnswer: "6900",
+    choices: ["$6,500", "$6,700", "$6,900", "$7,100"],
+    correctAnswer: "$6,900",
     explanation: "Step 1 — Treasury Stock Method for options: 5M options exercised at $30 generates $150M in proceeds. Shares repurchased at current price = $150M / $50 = 3M shares. Net new shares = 5M − 3M = 2M. Diluted shares = 100M + 2M = 102M. Step 2 — Equity Value = 102M × $50 = $5,100M. Step 3 — EV = Equity Value + Debt − Cash + Preferred + Minority Interest = $5,100M + $2,000M − $500M + $200M + $100M = $6,900M."
   },
   {
