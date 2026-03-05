@@ -114,4 +114,116 @@ export const BUSINESS_CASES: BusinessCase[] = [
       "Negative WC means the company funds operations by collecting from customers before paying suppliers. If customers pay late or suppliers demand faster payment, the company can face a cash crunch.",
     difficulty: "Intermediate",
   },
+  {
+    id: "cac-increase",
+    title: "CAC Increasing",
+    scenario: "A SaaS company's Customer Acquisition Cost (CAC) has risen 40% over the past year while LTV stayed flat.",
+    question: "What is the most likely cause?",
+    choices: [
+      "Higher product quality",
+      "Channel saturation — easy customers acquired; now targeting harder segments",
+      "Lower churn",
+      "Price increase",
+    ],
+    correct: "Channel saturation — easy customers acquired; now targeting harder segments",
+    reasoning:
+      "CAC typically rises as the company exhausts low-hanging fruit. Remaining prospects are harder to convert. LTV/CAC ratio deteriorates, threatening unit economics.",
+    difficulty: "Intermediate",
+  },
+  {
+    id: "mix-shift",
+    title: "Revenue Mix Shift",
+    scenario: "A company's revenue grows 10% but gross margin falls from 55% to 50%.",
+    question: "What could explain this?",
+    choices: [
+      "Higher prices",
+      "Mix shift toward lower-margin products or segments",
+      "Reduced fixed costs",
+      "Better inventory management",
+    ],
+    correct: "Mix shift toward lower-margin products or segments",
+    reasoning:
+      "Gross margin = (Revenue − COGS) / Revenue. A decline despite revenue growth suggests COGS is rising faster — often from selling more low-margin products.",
+    difficulty: "Beginner",
+  },
+  {
+    id: "opex-spike",
+    title: "OpEx Spike",
+    scenario: "A company's SG&A as % of revenue jumped from 25% to 35% in one year. Revenue was flat.",
+    question: "What is the most plausible explanation?",
+    choices: [
+      "One-time legal settlement",
+      "Investing ahead of growth — hiring, marketing, new offices",
+      "Lower depreciation",
+      "Reduced headcount",
+    ],
+    correct: "Investing ahead of growth — hiring, marketing, new offices",
+    reasoning:
+      "When revenue is flat but SG&A rises, fixed costs (salaries, rent, marketing) are being added before revenue catches up. Common in growth-stage companies.",
+    difficulty: "Intermediate",
+  },
+  {
+    id: "inventory-build",
+    title: "Inventory Build-Up",
+    scenario: "Inventory days increased from 45 to 75. Revenue grew 5%.",
+    question: "What does this suggest?",
+    choices: [
+      "Faster fulfillment",
+      "Overstocking or demand slowdown — risk of obsolescence or write-downs",
+      "Lower COGS",
+      "Just-in-time success",
+    ],
+    correct: "Overstocking or demand slowdown — risk of obsolescence or write-downs",
+    reasoning:
+      "Inventory days = (Inventory / COGS) × 365. Higher days with modest revenue growth suggests inventory is growing faster than sales — potential overstock or demand miss.",
+    difficulty: "Intermediate",
+  },
+  {
+    id: "nrr-decline",
+    title: "Net Revenue Retention Decline",
+    scenario: "A B2B SaaS company's Net Revenue Retention (NRR) fell from 110% to 95%.",
+    question: "What does this indicate?",
+    choices: [
+      "Strong expansion revenue",
+      "Churn and downgrades outweighing upsells — existing customer base shrinking",
+      "New customer acquisition improving",
+      "Price increase success",
+    ],
+    correct: "Churn and downgrades outweighing upsells — existing customer base shrinking",
+    reasoning:
+      "NRR measures revenue from existing customers (retention + expansion − churn). Below 100% means the installed base is contracting in revenue terms.",
+    difficulty: "Advanced",
+  },
+  {
+    id: "capex-deferral",
+    title: "CapEx Deferral",
+    scenario: "A manufacturing company has deferred maintenance CapEx for two years. EBITDA is strong.",
+    question: "What is the risk?",
+    choices: [
+      "Higher depreciation",
+      "Future catch-up spend and operational disruption when assets fail",
+      "Lower interest expense",
+      "Better cash flow",
+    ],
+    correct: "Future catch-up spend and operational disruption when assets fail",
+    reasoning:
+      "Deferring CapEx boosts short-term cash and EBITDA but creates a liability. When maintenance can't be delayed, costs spike and operations may suffer.",
+    difficulty: "Advanced",
+  },
+  {
+    id: "pricing-power-test",
+    title: "Pricing Power Test",
+    scenario: "A company raised prices 8% and volume dropped 2%.",
+    question: "What does this imply?",
+    choices: [
+      "Elastic demand — price increase backfired",
+      "Inelastic demand — revenue and margin improved despite small volume loss",
+      "Perfect competition",
+      "Market share loss",
+    ],
+    correct: "Inelastic demand — revenue and margin improved despite small volume loss",
+    reasoning:
+      "Volume drop of 2% vs price increase of 8% means revenue increased ~6%. Low elasticity indicates strong pricing power.",
+    difficulty: "Beginner",
+  },
 ];

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BarChart,
@@ -14,10 +14,23 @@ import {
 } from "recharts";
 import { DECISION_OPTIONS, BASE_METRICS } from "@/lib/business-acumen/simulation";
 import { Zap, Lightbulb } from "lucide-react";
+import { useBusinessAcumenStore } from "@/store/useBusinessAcumenStore";
 import { cn } from "@/lib/utils";
 
 export default function DecisionSimulationPage() {
+  const recordVisit = useBusinessAcumenStore((s) => s.recordVisit);
+  const completeScenario = useBusinessAcumenStore((s) => s.completeScenario);
+  useEffect(() => {
+    recordVisit("simulation");
+  }, [recordVisit]);
+
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const handleSelectOption = (id: string) => {
+    const wasSelected = selectedId === id;
+    setSelectedId(wasSelected ? null : id);
+    if (!wasSelected && id) completeScenario("simulation");
+  };
 
   const option = selectedId ? DECISION_OPTIONS.find((o) => o.id === selectedId) : null;
 
@@ -70,10 +83,10 @@ export default function DecisionSimulationPage() {
               <CardTitle className="text-base">Your Decision</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              {DECISION_OPTIONS.map((o) => (
+                {DECISION_OPTIONS.map((o) => (
                 <button
                   key={o.id}
-                  onClick={() => setSelectedId(selectedId === o.id ? null : o.id)}
+                  onClick={() => handleSelectOption(o.id)}
                   className={cn(
                     "w-full text-left p-3 rounded-lg border transition-all",
                     selectedId === o.id

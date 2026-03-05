@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BUSINESS_CASES } from "@/lib/business-acumen/cases";
+import { useBusinessAcumenStore } from "@/store/useBusinessAcumenStore";
 
 function getFeedback(correct: number, total: number): string {
   const pct = total > 0 ? (correct / total) * 100 : 0;
@@ -26,6 +27,13 @@ function getFeedback(correct: number, total: number): string {
 }
 
 export default function BusinessCasesPage() {
+  const recordVisit = useBusinessAcumenStore((s) => s.recordVisit);
+  const completePractice = useBusinessAcumenStore((s) => s.completePractice);
+  const hasReportedPractice = useRef(false);
+  useEffect(() => {
+    recordVisit("cases");
+  }, [recordVisit]);
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [revealed, setRevealed] = useState<Record<string, boolean>>({});
@@ -45,6 +53,13 @@ export default function BusinessCasesPage() {
       accuracy: answered > 0 ? Math.round((correct / answered) * 100) : 0,
     };
   }, [answers]);
+
+  useEffect(() => {
+    if (finished && !hasReportedPractice.current) {
+      hasReportedPractice.current = true;
+      completePractice("cases", stats.accuracy);
+    }
+  }, [finished, stats.accuracy, completePractice]);
 
   const handleSelect = useCallback(
     (choice: string) => {
@@ -68,6 +83,7 @@ export default function BusinessCasesPage() {
     setAnswers({});
     setRevealed({});
     setFinished(false);
+    hasReportedPractice.current = false;
   }, []);
 
   return (

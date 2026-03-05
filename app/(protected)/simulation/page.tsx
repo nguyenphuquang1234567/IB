@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   createBaseModel,
@@ -37,6 +37,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useCorporateFinanceStore } from "@/store/useCorporateFinanceStore";
 
 const fmt = (n: number) =>
   n < 0 ? `(${Math.abs(n).toLocaleString()})` : n.toLocaleString();
@@ -240,6 +241,10 @@ function StatementCard({
 }
 
 export default function SimulationPage() {
+  const recordVisit = useCorporateFinanceStore((s) => s.recordVisit);
+  useEffect(() => {
+    recordVisit("simulation");
+  }, [recordVisit]);
   const [model, setModel] = useState<FinancialModel>(createBaseModel);
   const [selectedEvent, setSelectedEvent] = useState<EventType>("buy_ppe_cash");
   const [amount, setAmount] = useState(100);

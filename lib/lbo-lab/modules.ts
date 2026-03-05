@@ -117,4 +117,102 @@ export const LBO_LEARNING_MODULES: LearningModule[] = [
       },
     ],
   },
+  {
+    id: "sources-uses",
+    title: "Sources & Uses Table",
+    formula: "Sources = Uses\nSources: Debt + Equity\nUses: Purchase Price + Fees",
+    explanation:
+      "The Sources and Uses table is the foundation of LBO modeling. All capital raised (sources) must equal all capital deployed (uses). Uses include purchase price, transaction fees (1-2%), and financing fees. Fees increase the equity check.",
+    example: {
+      description: "Build S&U for $500M deal with 2% fees",
+      inputs: [
+        { label: "Purchase Price", value: "$500M" },
+        { label: "Fees", value: "2%" },
+      ],
+      calculation: "Uses = $500M + $10M = $510M. Sources must equal $510M.",
+      result: "Debt + Equity = $510M",
+    },
+    commonMistakes: [
+      "Forgetting financing fees (arrangement, commitment)",
+      "Including seller's fees in uses",
+      "Not balancing the table",
+    ],
+    quiz: [
+      {
+        question: "Sources must ___ Uses",
+        answer: "equal",
+        hint: "Balance",
+      },
+      {
+        question: "Uses include purchase price and ___",
+        answer: "fees",
+        hint: "Transaction, financing",
+      },
+    ],
+  },
+  {
+    id: "entry-exit",
+    title: "Entry vs Exit Multiple",
+    formula: "Entry Multiple = Purchase Price / Entry EBITDA\nExit Multiple = Exit EV / Exit EBITDA",
+    explanation:
+      "Entry multiple reflects what you pay; exit multiple reflects what you sell for. Multiple expansion (exit > entry) boosts returns but is speculative. Multiple contraction hurts. Operational improvement (EBITDA growth) is more reliable.",
+    example: {
+      description: "Entry 8x, Exit 10x, EBITDA grows 50%",
+      inputs: [
+        { label: "Entry EV", value: "$800M" },
+        { label: "Exit EBITDA", value: "$150M" },
+      ],
+      calculation: "Exit EV = 10 × $150M = $1,500M. Value from growth + multiple expansion.",
+      result: "~1.9x on equity (simplified)",
+    },
+    commonMistakes: [
+      "Assuming exit multiple equals or exceeds entry",
+      "Ignoring industry multiple trends",
+      "Over-relying on multiple expansion for returns",
+    ],
+    quiz: [
+      {
+        question: "Entry Multiple = Purchase Price / ___",
+        answer: "Entry EBITDA",
+        hint: "At acquisition",
+      },
+      {
+        question: "Multiple ___ (expansion/contraction) is speculative",
+        answer: "expansion",
+        hint: "Exit > entry",
+      },
+    ],
+  },
+  {
+    id: "debt-schedule",
+    title: "Debt Repayment Schedule",
+    formula: "FCF → Interest → Principal Paydown → Cash Sweep",
+    explanation:
+      "Cash flow waterfall: Operating FCF first pays interest, then principal. Cash sweep means excess FCF pays down debt. Mandatory amortization (term loan) vs bullet (high-yield). More paydown = less debt at exit = higher equity value.",
+    example: {
+      description: "FCF $50M, Interest $20M, Mandatory $10M",
+      inputs: [
+        { label: "Excess FCF", value: "$20M" },
+      ],
+      calculation: "Sweep $20M to debt. Remaining debt decreases.",
+      result: "Faster paydown improves returns",
+    },
+    commonMistakes: [
+      "Ignoring mandatory amortization in term loans",
+      "Assuming all FCF is available for paydown",
+      "Not modeling interest on declining balance",
+    ],
+    quiz: [
+      {
+        question: "FCF first pays ___ then principal",
+        answer: "interest",
+        hint: "Debt service",
+      },
+      {
+        question: "More debt paydown = ___ equity value at exit",
+        answer: "higher",
+        hint: "Less debt remaining",
+      },
+    ],
+  },
 ];

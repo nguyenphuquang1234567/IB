@@ -1,28 +1,76 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ACUMEN_CONCEPTS } from "@/lib/business-acumen/concepts";
-import { ChevronRight, AlertTriangle, Lightbulb } from "lucide-react";
+import { BA_LEARNING_MODULES } from "@/lib/business-acumen/modules";
+import { ChevronRight, AlertTriangle, Lightbulb, BookOpen } from "lucide-react";
+import { useBusinessAcumenStore } from "@/store/useBusinessAcumenStore";
 import { cn } from "@/lib/utils";
 
 export default function AcumenLearningPage() {
+  const recordVisit = useBusinessAcumenStore((s) => s.recordVisit);
+  const markLessonViewed = useBusinessAcumenStore((s) => s.markLessonViewed);
+  useEffect(() => {
+    recordVisit("learning");
+  }, [recordVisit]);
+
   const [expandedId, setExpandedId] = useState<string | null>("revenue-drivers");
+  const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
+
+  const conceptsToShow = activeModuleId
+    ? BA_LEARNING_MODULES.find((m) => m.id === activeModuleId)?.conceptIds ?? ACUMEN_CONCEPTS.map((c) => c.id)
+    : ACUMEN_CONCEPTS.map((c) => c.id);
+
+  const handleExpand = (conceptId: string) => {
+    setExpandedId(expandedId === conceptId ? null : conceptId);
+    if (conceptId) markLessonViewed("learning", conceptId);
+  };
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-varela font-bold text-finstep-brown dark:text-foreground">
+        <h1 className="text-xl font-varela font-bold text-finstep-brown dark:text-foreground flex items-center gap-2">
+          <BookOpen className="w-5 h-5 text-amber-500" />
           Business Acumen Concepts
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Core concepts for consulting and business strategy
+          15 concepts chia 4 module — Core concepts for consulting and business strategy
         </p>
       </div>
 
+      {/* Module tabs */}
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => setActiveModuleId(null)}
+          className={cn(
+            "px-3 py-1.5 rounded-lg text-xs font-medium transition-all",
+            !activeModuleId
+              ? "bg-amber-500 text-white"
+              : "bg-muted/50 text-muted-foreground hover:bg-muted"
+          )}
+        >
+          Tất cả
+        </button>
+        {BA_LEARNING_MODULES.map((m) => (
+          <button
+            key={m.id}
+            onClick={() => setActiveModuleId(m.id)}
+            className={cn(
+              "px-3 py-1.5 rounded-lg text-xs font-medium transition-all",
+              activeModuleId === m.id
+                ? "bg-amber-500 text-white"
+                : "bg-muted/50 text-muted-foreground hover:bg-muted"
+            )}
+          >
+            {m.title} ({m.conceptIds.length})
+          </button>
+        ))}
+      </div>
+
       <div className="space-y-4">
-        {ACUMEN_CONCEPTS.map((concept) => (
+        {ACUMEN_CONCEPTS.filter((c) => conceptsToShow.includes(c.id)).map((concept) => (
           <motion.div
             key={concept.id}
             layout
@@ -32,17 +80,17 @@ export default function AcumenLearningPage() {
             <Card
               className={cn(
                 "shadow-sm border-border/40 overflow-hidden transition-all",
-                expandedId === concept.id && "ring-2 ring-finstep-orange/30"
+                expandedId === concept.id && "ring-2 ring-amber-500/30"
               )}
             >
               <button
-                onClick={() => setExpandedId(expandedId === concept.id ? null : concept.id)}
+                onClick={() => handleExpand(concept.id)}
                 className="w-full text-left"
               >
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <h3 className="font-varela font-bold text-finstep-brown dark:text-foreground flex items-center gap-2">
-                      <Lightbulb className="w-4 h-4 text-finstep-orange" />
+                      <Lightbulb className="w-4 h-4 text-amber-500" />
                       {concept.title}
                     </h3>
                     <ChevronRight

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
@@ -12,6 +13,7 @@ import {
   ArrowLeft,
   Lightbulb,
 } from "lucide-react";
+import { useCorporateFinanceStore } from "@/store/useCorporateFinanceStore";
 
 const NAV_ITEMS = [
   { href: "/budgeting-forecasting", label: "Overview", icon: BarChart3 },
@@ -28,6 +30,10 @@ export default function BudgetingLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const recordVisit = useCorporateFinanceStore((s) => s.recordVisit);
+  useEffect(() => {
+    recordVisit("budgeting");
+  }, [recordVisit]);
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 max-w-7xl mx-auto">

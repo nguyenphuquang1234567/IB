@@ -17,6 +17,10 @@ import {
   Target,
   BookOpen,
   Zap,
+  Layers,
+  Droplets,
+  LineChart,
+  Gamepad2,
 } from "lucide-react";
 
 export interface DomainItem {
@@ -42,12 +46,17 @@ export const DOMAINS: Domain[] = [
     label: "Corporate Finance",
     icon: FlaskConical,
     color: "from-blue-500 to-cyan-500",
-    description: "3-statement modeling, budgeting, and business acumen",
+    description: "Build forecasts, analyze performance, evaluate investments, and manage corporate financial strategy",
     landingHref: "/corporate-finance",
     items: [
       { href: "/simulation", label: "3-Statement Sim", icon: FlaskConical },
       { href: "/budgeting-forecasting", label: "Budgeting & Forecasting", icon: TrendingUp },
       { href: "/business-acumen", label: "Business Acumen Testing", icon: Lightbulb },
+      { href: "/corporate-finance/capital-structure", label: "Capital Structure Lab", icon: Layers },
+      { href: "/corporate-finance/investment", label: "Corporate Investment Lab", icon: Target },
+      { href: "/corporate-finance/cash-flow", label: "Cash Flow & Liquidity Lab", icon: Droplets },
+      { href: "/corporate-finance/performance", label: "Financial Performance Lab", icon: LineChart },
+      { href: "/corporate-finance/strategy", label: "Corporate Strategy Simulator", icon: Gamepad2 },
     ],
   },
   {

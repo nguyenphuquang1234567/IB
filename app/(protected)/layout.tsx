@@ -23,7 +23,7 @@ export default async function ProtectedLayout({
       </div>
       <div className="flex-1 flex flex-col min-w-0 min-h-screen overflow-x-hidden">
         <MobileNav />
-        <main className="flex-1 w-full min-w-0 overflow-x-auto p-2 md:p-6 lg:p-8">
+        <main className="flex-1 w-full min-w-0 overflow-x-auto p-2 md:p-6 lg:p-8 pb-20 sm:pb-8">
           {children}
         </main>
         <Chatbot />

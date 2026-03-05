@@ -106,4 +106,102 @@ export const ACUMEN_CONCEPTS: AcumenConcept[] = [
       "Not aligning growth strategy with available capital",
     ],
   },
+  {
+    id: "working-capital",
+    title: "Working Capital Management",
+    explanation:
+      "Working capital = Current Assets − Current Liabilities. Key components: inventory, receivables, payables. CCC (Cash Conversion Cycle) = DSO + DIO − DPO measures how fast cash cycles. Negative WC can be a strength (collect before pay) or risk (liquidity).",
+    example:
+      "A retailer with DSO 30, DIO 45, DPO 60 has CCC = 15 days. Extending DPO or reducing DIO improves cash flow.",
+    diagram: "CCC = DSO + DIO − DPO | Lower = Better cash efficiency",
+    mistakes: [
+      "Ignoring seasonality in WC requirements",
+      "Optimizing one component at the expense of others",
+      "Treating negative WC as always positive",
+    ],
+  },
+  {
+    id: "break-even-analysis",
+    title: "Break-Even Analysis",
+    explanation:
+      "Break-even = Fixed Costs / (Price − Variable Cost per unit). At break-even, profit = 0. Contribution margin per unit drives how many units needed to cover fixed costs. Useful for pricing, capacity, and investment decisions.",
+    example:
+      "Fixed costs $100k, CM $20/unit → break-even = 5,000 units. Above that, each unit adds $20 to profit.",
+    diagram: "Break-Even Units = Fixed Costs / Contribution Margin",
+    mistakes: [
+      "Assuming linear cost behavior at scale",
+      "Ignoring opportunity cost of capital",
+      "Using break-even as sole decision criterion",
+    ],
+  },
+  {
+    id: "customer-segmentation",
+    title: "Customer Segmentation",
+    explanation:
+      "Segment customers by value, behavior, or needs. Pareto (80/20) often applies: few customers drive most revenue. High-value segments justify premium service; low-value may need self-serve or exit. LTV by segment informs acquisition spend.",
+    example:
+      "Enterprise (20% of customers, 70% of revenue) gets dedicated support; SMB gets scaled solutions.",
+    diagram: "Segment → LTV, CAC, Churn → Strategy",
+    mistakes: [
+      "Over-segmenting without actionable differences",
+      "Treating all segments equally",
+      "Ignoring segment migration over time",
+    ],
+  },
+  {
+    id: "product-lifecycle",
+    title: "Product Lifecycle",
+    explanation:
+      "Products move through introduction, growth, maturity, decline. Strategy differs by stage: invest in growth products; harvest mature; divest or reinvent declining. Portfolio balance matters for sustainable revenue.",
+    example:
+      "A mature cash cow funds R&D for new products. Killing a declining product too early loses profit; too late wastes resources.",
+    diagram: "Intro → Growth → Maturity → Decline",
+    mistakes: [
+      "Over-investing in declining products",
+      "Under-investing in growth opportunities",
+      "Ignoring competitive dynamics by stage",
+    ],
+  },
+  {
+    id: "competitive-moats",
+    title: "Competitive Moats",
+    explanation:
+      "Moats protect profits from competition: network effects, switching costs, brand, cost advantage, regulatory. Sustainable advantage requires defensibility. Weak moats get competed away.",
+    example:
+      "A SaaS with deep integrations has switching costs. A commodity with no moat competes on price alone.",
+    diagram: "Moat Strength → Pricing Power → Margin Sustainability",
+    mistakes: [
+      "Confusing temporary advantage with moat",
+      "Overestimating brand loyalty",
+      "Ignoring disruptive threats",
+    ],
+  },
+  {
+    id: "scenario-analysis",
+    title: "Scenario Analysis",
+    explanation:
+      "Build base, bull, bear cases for key drivers. Stress-test assumptions. Identify sensitivities. Used for planning, valuation, and risk management. Avoid single-point forecasts.",
+    example:
+      "Revenue: base 10% growth, bull 15%, bear 5%. Model impact on cash, margins, and funding needs.",
+    diagram: "Base | Bull ↑ | Bear ↓ → Range of outcomes",
+    mistakes: [
+      "Making scenarios too similar (false precision)",
+      "Ignoring correlation between drivers",
+      "Anchoring on base case",
+    ],
+  },
+  {
+    id: "kpi-dashboards",
+    title: "KPIs and Dashboards",
+    explanation:
+      "Leading vs lagging indicators. Revenue: ARR, MRR, churn, NRR. Efficiency: CAC, LTV, payback. Operational: DSO, DIO, inventory turns. Choose metrics that drive action and align with strategy.",
+    example:
+      "A subscription business tracks MRR, churn, NRR. A manufacturer tracks inventory turns, DSO.",
+    diagram: "Strategy → KPIs → Targets → Action",
+    mistakes: [
+      "Too many KPIs (noise)",
+      "Lagging-only (reactive)",
+      "Vanity metrics over actionable ones",
+    ],
+  },
 ];

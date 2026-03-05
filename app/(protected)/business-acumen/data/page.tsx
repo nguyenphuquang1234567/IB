@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,8 +26,16 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DATA_EXERCISES } from "@/lib/business-acumen/data-interpretation";
+import { useBusinessAcumenStore } from "@/store/useBusinessAcumenStore";
 
 export default function DataInterpretationPage() {
+  const recordVisit = useBusinessAcumenStore((s) => s.recordVisit);
+  const completePractice = useBusinessAcumenStore((s) => s.completePractice);
+  const hasReportedPractice = useRef(false);
+  useEffect(() => {
+    recordVisit("data");
+  }, [recordVisit]);
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [revealed, setRevealed] = useState<Record<string, boolean>>({});
@@ -38,14 +46,14 @@ export default function DataInterpretationPage() {
   const isRevealed = ex ? !!revealed[ex.id] : false;
 
   function getFeedback(correct: number, total: number): string {
-  const pct = total > 0 ? (correct / total) * 100 : 0;
-  if (pct >= 85) return "Strong data interpretation. You correctly linked metrics to business drivers.";
-  if (pct >= 70) return "Good progress. Focus on calculating ratios and trends before answering.";
-  if (pct >= 50) return "Keep practicing. Look for cause-effect relationships in the data.";
-  return "Review the concepts. Data interpretation improves with pattern recognition.";
-}
+    const pct = total > 0 ? (correct / total) * 100 : 0;
+    if (pct >= 85) return "Strong data interpretation. You correctly linked metrics to business drivers.";
+    if (pct >= 70) return "Good progress. Focus on calculating ratios and trends before answering.";
+    if (pct >= 50) return "Keep practicing. Look for cause-effect relationships in the data.";
+    return "Review the concepts. Data interpretation improves with pattern recognition.";
+  }
 
-const stats = useMemo(() => {
+  const stats = useMemo(() => {
     const answered = Object.keys(answers).length;
     const correct = DATA_EXERCISES.filter((x) => answers[x.id] === x.correct).length;
     return {
@@ -55,6 +63,13 @@ const stats = useMemo(() => {
       accuracy: answered > 0 ? Math.round((correct / answered) * 100) : 0,
     };
   }, [answers]);
+
+  useEffect(() => {
+    if (finished && !hasReportedPractice.current) {
+      hasReportedPractice.current = true;
+      completePractice("data", stats.accuracy);
+    }
+  }, [finished, stats.accuracy, completePractice]);
 
   const handleSelect = useCallback(
     (choice: string) => {
@@ -78,6 +93,7 @@ const stats = useMemo(() => {
     setAnswers({});
     setRevealed({});
     setFinished(false);
+    hasReportedPractice.current = false;
   }, []);
 
   const chartData = ex?.data ?? [];

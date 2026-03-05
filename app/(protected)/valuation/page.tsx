@@ -23,7 +23,7 @@ const labs = [
   {
     href: "/valuation/lbo",
     title: "LBO Lab",
-    description: "Practice leveraged buyout modeling. Structure deals, build sources & uses, and calculate IRR and MOIC.",
+    description: "Advanced PE deal simulator. Fundamentals, deal sourcing, LBO modeling, value creation, and exit returns.",
     icon: Landmark,
     color: "bg-emerald-500",
   },

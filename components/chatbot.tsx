@@ -79,7 +79,7 @@ export function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed bottom-20 right-4 sm:right-6 z-50 w-[360px] max-w-[calc(100vw-2rem)] rounded-2xl border border-finstep-brown/10 bg-card/95 backdrop-blur-md shadow-2xl shadow-finstep-orange/10 overflow-hidden font-nunito"
+            className="fixed bottom-20 right-4 sm:right-6 z-[99] w-[360px] sm:w-[380px] max-w-[calc(100vw-2rem)] max-h-[calc(100dvh-6rem)] rounded-2xl border border-finstep-brown/10 bg-card/95 backdrop-blur-md shadow-2xl shadow-finstep-orange/10 overflow-hidden font-nunito flex flex-col"
           >
             <div className="bg-finstep-orange px-4 py-3 flex items-center justify-between border-b border-finstep-brown/10">
               <div className="flex items-center gap-2 text-white">
@@ -101,7 +101,7 @@ export function Chatbot() {
               </Button>
             </div>
 
-            <ScrollArea className="h-[350px]" ref={scrollRef}>
+            <ScrollArea className="h-[280px] sm:h-[350px] shrink-0" ref={scrollRef}>
               <div className="p-4 space-y-3">
                 {messages.map((msg, i) => (
                   <motion.div
@@ -193,13 +193,14 @@ export function Chatbot() {
       </AnimatePresence>
 
       <motion.button
-        whileHover={{ scale: 1.05 }}
+        whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "fixed bottom-4 right-4 sm:right-6 z-50 w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-finstep-orange hover:bg-finstep-brown text-white shadow-xl shadow-finstep-orange/30 flex items-center justify-center transition-all",
-          isOpen && "rotate-0"
+          "fixed bottom-5 right-4 sm:right-6 z-[100] w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-finstep-orange hover:bg-finstep-brown text-white shadow-2xl shadow-finstep-orange/40 flex items-center justify-center transition-all ring-4 ring-finstep-orange/20",
+          !isOpen && "animate-pulse"
         )}
+        aria-label={isOpen ? "Đóng chatbot" : "Mở chatbot"}
       >
         <AnimatePresence mode="wait">
           {isOpen ? (
