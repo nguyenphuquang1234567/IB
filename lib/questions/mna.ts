@@ -215,18 +215,20 @@ export const mnaQuestions: Question[] = [
     id: "mna-15",
     section: "M&A",
     difficulty: "Advanced",
-    type: "numeric",
+    type: "mcq",
     question: "A target company has an enterprise value of $500 million and its unaffected share price was $40. The acquirer offers $52 per share. What is the acquisition premium as a percentage (round to the nearest whole number)?",
-    correctAnswer: "30",
+    choices: ["22%", "25%", "30%", "35%"],
+    correctAnswer: "30%",
     explanation: "The acquisition premium is calculated as (Offer Price - Unaffected Price) / Unaffected Price = ($52 - $40) / $40 = 30%. Typical acquisition premiums range from 20-40% over the unaffected share price."
   },
   {
     id: "mna-16",
     section: "M&A",
     difficulty: "Advanced",
-    type: "numeric",
+    type: "mcq",
     question: "An acquirer pays $800M for a target with $600M in identifiable net assets at fair market value. A year later, the reporting unit's fair value has declined to $700M. What is the goodwill impairment charge (in $M)?",
-    correctAnswer: "100",
+    choices: ["$50M", "$100M", "$150M", "$200M"],
+    correctAnswer: "$100M",
     explanation: "Goodwill = $800M - $600M = $200M. Under the simplified impairment test, the carrying value of the reporting unit ($800M) exceeds its fair value ($700M) by $100M. Since this excess ($100M) is less than the total goodwill ($200M), the impairment charge is $100M."
   },
   {
@@ -263,8 +265,9 @@ export const mnaQuestions: Question[] = [
     id: "mna-19",
     section: "M&A",
     difficulty: "Elite",
-    type: "numeric",
+    type: "mcq",
     question: "An acquirer with 100M shares outstanding at $50/share acquires a target for $2B in an all-stock deal using a fixed exchange ratio. The target has 40M shares outstanding at $40/share. What is the exchange ratio (target shares to acquirer shares, rounded to one decimal place)?",
+    choices: ["0.8", "1.0", "1.2", "1.5"],
     correctAnswer: "1.0",
     explanation: "The total consideration is $2B for 40M target shares, so the per-share price offered is $2B / 40M = $50. The exchange ratio = Offer Price Per Share / Acquirer Share Price = $50 / $50 = 1.0. Each target share is exchanged for 1.0 acquirer share, resulting in 40M new shares issued."
   },
@@ -272,9 +275,10 @@ export const mnaQuestions: Question[] = [
     id: "mna-20",
     section: "M&A",
     difficulty: "Elite",
-    type: "numeric",
+    type: "mcq",
     question: "A target company generates $150M in revenue with 40% EBITDA margins. The acquirer expects to realize $30M in annual cost synergies. If the acquisition multiple is 10x pre-synergy EBITDA, what is the effective EV/EBITDA multiple on a post-synergy basis (round to one decimal place)?",
-    correctAnswer: "6.7",
+    choices: ["5.5x", "6.7x", "7.1x", "8.3x"],
+    correctAnswer: "6.7x",
     explanation: "Pre-synergy EBITDA = $150M × 40% = $60M. Purchase price = 10x × $60M = $600M. Post-synergy EBITDA = $60M + $30M = $90M. Effective post-synergy multiple = $600M / $90M = 6.7x. This illustrates how synergies effectively reduce the acquisition multiple, creating value for the acquirer."
   }
 ];

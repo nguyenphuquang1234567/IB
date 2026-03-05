@@ -12,15 +12,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -34,14 +33,16 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  accounts      Account[]
-  sessions      Session[]
+  id                 String             @id @default(cuid())
+  name               String?
+  email              String?            @unique
+  emailVerified      DateTime?
+  image              String?
+  password           String?
+  accounts           Account[]
+  sessions           Session[]
+  userQuizProgresses UserQuizProgress[]
+  quizAttempts       QuizAttempt[]
 }
 
 model VerificationToken {
@@ -56,21 +57,75 @@ model EssayCategory {
   id        String          @id @default(cuid())
   name      String          @unique
   slug      String          @unique
-  questions EssayQuestion[]
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
+  questions EssayQuestion[]
 }
 
 model EssayQuestion {
-  id              String @id @default(cuid())
-  questionText    String @db.Text
-  suggestedAnswer String @db.Text
-
-  categoryId String
-  category   EssayCategory @relation(fields: [categoryId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String        @id @default(cuid())
+  questionText    String
+  suggestedAnswer String
+  categoryId      String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  category        EssayCategory @relation(fields: [categoryId], references: [id])
 
   @@index([categoryId])
+}
+
+model QuizCategory {
+  id                 String             @id @default(cuid())
+  name               String             @unique
+  slug               String             @unique
+  createdAt          DateTime           @default(now())
+  questions          QuizQuestion[]
+  userQuizProgresses UserQuizProgress[]
+}
+
+model QuizQuestion {
+  id            String       @id @default(cuid())
+  questionId    String       @unique
+  questionText  String
+  choices       String[]
+  correctAnswer String
+  explanation   String
+  difficulty    String       @default("Beginner")
+  type          String       @default("mcq")
+  categoryId    String
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  category      QuizCategory @relation(fields: [categoryId], references: [id])
+
+  @@index([categoryId])
+}
+
+model UserQuizProgress {
+  id             String   @id @default(cuid())
+  userId         String
+  categoryId     String
+  questionsDone  Int      @default(0)
+  correctAnswers Int      @default(0)
+  updatedAt      DateTime @updatedAt
+
+  user     User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category QuizCategory @relation(fields: [categoryId], references: [id])
+
+  @@unique([userId, categoryId])
+  @@index([userId])
+}
+
+model QuizAttempt {
+  id         String   @id @default(cuid())
+  userId     String
+  section    String
+  difficulty String
+  score      Int
+  total      Int
+  accuracy   Int
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

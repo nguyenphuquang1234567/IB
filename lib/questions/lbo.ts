@@ -200,27 +200,30 @@ export const lboQuestions: Question[] = [
     id: "lbo-14",
     section: "LBO",
     difficulty: "Advanced",
-    type: "numeric",
+    type: "mcq",
     question: "A PE firm invests $400M in equity for an LBO and exits after 5 years, receiving $1,200M. What is the MOIC (round to one decimal place)?",
-    correctAnswer: "3.0",
+    choices: ["2.0x", "2.5x", "3.0x", "3.5x"],
+    correctAnswer: "3.0x",
     explanation: "MOIC = Exit Equity Value / Initial Equity Investment = $1,200M / $400M = 3.0x. This means the PE firm received 3 times its original equity investment back over the 5-year holding period."
   },
   {
     id: "lbo-15",
     section: "LBO",
     difficulty: "Advanced",
-    type: "numeric",
+    type: "mcq",
     question: "An LBO target has EBITDA of $100M and an enterprise value of $1,000M at entry. Total debt at entry is 5.0x EBITDA. Transaction and financing fees total $50M. How much sponsor equity is required (in $M)?",
-    correctAnswer: "550",
+    choices: ["$450M", "$500M", "$550M", "$600M"],
+    correctAnswer: "$550M",
     explanation: "Total debt = 5.0x × $100M EBITDA = $500M. Total uses = $1,000M (enterprise value) + $50M (fees) = $1,050M. Total sources = $500M (debt) + Sponsor Equity. Sponsor equity = $1,050M - $500M = $550M."
   },
   {
     id: "lbo-16",
     section: "LBO",
     difficulty: "Advanced",
-    type: "numeric",
+    type: "mcq",
     question: "An LBO target has $200M EBITDA, $80M in interest expense, and $25M in mandatory debt amortization. What is the fixed charge coverage ratio (EBITDA / (Interest + Mandatory Amortization))? Round to one decimal place.",
-    correctAnswer: "1.9",
+    choices: ["1.5x", "1.7x", "1.9x", "2.1x"],
+    correctAnswer: "1.9x",
     explanation: "Fixed Charge Coverage Ratio = EBITDA / (Interest Expense + Mandatory Debt Amortization) = $200M / ($80M + $25M) = $200M / $105M = 1.9x. This metric is more conservative than interest coverage alone because it also accounts for required principal repayments."
   },
   {
@@ -242,9 +245,10 @@ export const lboQuestions: Question[] = [
     id: "lbo-18",
     section: "LBO",
     difficulty: "Elite",
-    type: "numeric",
+    type: "mcq",
     question: "A PE firm acquires a company at 8.0x EBITDA ($100M EBITDA) with 60% debt. Over 5 years, EBITDA grows to $140M, all debt is repaid, and the firm exits at 9.0x EBITDA. What is the MOIC on the sponsor's equity (round to one decimal place)?",
-    correctAnswer: "3.9",
+    choices: ["3.2x", "3.5x", "3.9x", "4.2x"],
+    correctAnswer: "3.9x",
     explanation: "Entry EV = 8.0x × $100M = $800M. Debt = 60% × $800M = $480M. Sponsor equity = $800M - $480M = $320M. Exit EV = 9.0x × $140M = $1,260M. Exit debt = $0 (all repaid). Exit equity = $1,260M - $0 = $1,260M. MOIC = $1,260M / $320M = 3.9x. Returns were driven by all three levers: EBITDA growth (40%), multiple expansion (8.0x to 9.0x), and debt paydown ($480M)."
   },
   {
@@ -266,9 +270,10 @@ export const lboQuestions: Question[] = [
     id: "lbo-20",
     section: "LBO",
     difficulty: "Elite",
-    type: "numeric",
+    type: "mcq",
     question: "A PE firm acquires a company for $500M with $300M in debt and $200M in equity. After 4 years, the firm exits at an enterprise value of $700M with $150M of remaining debt. What is the approximate IRR on the sponsor's equity (round to the nearest whole number)?",
-    correctAnswer: "29",
+    choices: ["22%", "25%", "29%", "33%"],
+    correctAnswer: "29%",
     explanation: "Entry equity = $200M. Exit equity = $700M - $150M = $550M. MOIC = $550M / $200M = 2.75x over 4 years. IRR = (MOIC)^(1/n) - 1 = (2.75)^(1/4) - 1 = (2.75)^0.25 - 1 ≈ 1.288 - 1 = 0.288, or approximately 29%. The three return drivers here are EBITDA growth ($700M exit EV vs $500M entry EV), and debt paydown ($300M to $150M), which together grew the equity from $200M to $550M."
   }
 ];

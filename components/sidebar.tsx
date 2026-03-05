@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
@@ -53,10 +54,18 @@ const sections: { label: Section; icon: typeof Calculator }[] = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { eliteMode, setEliteMode, progress, getAccuracy } = useQuizStore();
-  const accuracy = getAccuracy();
+  const { eliteMode, setEliteMode, progress, dbAnalytics, fetchDBAnalytics, fetchAllTechnicalQuestions } = useQuizStore();
   const { theme, setTheme } = useTheme();
   const { data: session } = useSession();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    if (session) {
+      fetchDBAnalytics();
+      fetchAllTechnicalQuestions();
+    }
+  }, [session, fetchDBAnalytics, fetchAllTechnicalQuestions]);
 
   return (
     <aside className="flex flex-col w-full bg-finstep-beige/30 h-screen sticky top-0">
@@ -104,11 +113,9 @@ export function Sidebar() {
         </p>
 
         {sections.map((section) => {
-          const stats = progress.sectionStats[section.label];
-          const sectionAcc =
-            stats && stats.total > 0
-              ? Math.round((stats.correct / stats.total) * 100)
-              : null;
+          const sectionData = dbAnalytics.sections.find(s => s.section === section.label);
+          if (mounted && sectionData) console.log(`[Sidebar] Found data for ${section.label}:`, sectionData);
+          const sectionAcc = sectionData ? sectionData.accuracy : null;
 
           return (
             <div
@@ -119,7 +126,7 @@ export function Sidebar() {
                 <section.icon className="w-3.5 h-3.5 text-finstep-lightbrown" />
                 <span className="text-xs">{section.label}</span>
               </div>
-              {sectionAcc !== null && (
+              {mounted && sectionAcc !== null && (
                 <Badge
                   variant={sectionAcc >= 75 ? "default" : "secondary"}
                   className="text-[10px] px-1.5 py-0"
@@ -141,13 +148,13 @@ export function Sidebar() {
           <div>
             <div className="flex justify-between text-xs mb-1.5">
               <span className="text-finstep-brown/70 font-semibold">Overall Accuracy</span>
-              <span className="font-varela font-bold tabular-nums text-finstep-brown">{accuracy}%</span>
+              <span className="font-varela font-bold tabular-nums text-finstep-brown">{mounted ? dbAnalytics.overall.overallAccuracy : 0}%</span>
             </div>
-            <Progress value={accuracy} className="h-2 bg-finstep-beige/50 [&>div]:bg-finstep-orange" />
+            <Progress value={mounted ? dbAnalytics.overall.overallAccuracy : 0} className="h-2 bg-finstep-beige/50 [&>div]:bg-finstep-orange" />
           </div>
           <div className="flex justify-between text-xs">
             <span className="text-finstep-brown/70 font-semibold">Questions Done</span>
-            <span className="font-varela font-bold tabular-nums text-finstep-brown">{progress.totalCompleted}</span>
+            <span className="font-varela font-bold tabular-nums text-finstep-brown">{mounted ? dbAnalytics.overall.totalQuestionsDone : 0}</span>
           </div>
         </div>
 

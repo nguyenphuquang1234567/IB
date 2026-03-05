@@ -170,9 +170,15 @@ export const accountingQuestions: Question[] = [
     id: "acc-12",
     section: "Accounting",
     difficulty: "Beginner",
-    type: "numeric",
+    type: "mcq",
     question: "A company purchases equipment for $500,000 with a useful life of 10 years and no salvage value using straight-line depreciation. What is the annual depreciation expense in dollars?",
-    correctAnswer: "50000",
+    choices: [
+      "40,000",
+      "50,000",
+      "60,000",
+      "100,000"
+    ],
+    correctAnswer: "50,000",
     explanation: "Straight-line depreciation = (Cost − Salvage Value) / Useful Life = ($500,000 − $0) / 10 = $50,000 per year."
   },
   {
@@ -254,8 +260,14 @@ export const accountingQuestions: Question[] = [
     id: "acc-18",
     section: "Accounting",
     difficulty: "Beginner",
-    type: "numeric",
+    type: "mcq",
     question: "A company has Revenue of $1,000, COGS of $400, SG&A of $200, and D&A of $50. What is EBITDA?",
+    choices: [
+      "350",
+      "400",
+      "450",
+      "600"
+    ],
     correctAnswer: "400",
     explanation: "EBIT = Revenue − COGS − SG&A − D&A = $1,000 − $400 − $200 − $50 = $350. EBITDA = EBIT + D&A = $350 + $50 = $400."
   },
@@ -353,9 +365,15 @@ export const accountingQuestions: Question[] = [
     id: "acc-25",
     section: "Accounting",
     difficulty: "Advanced",
-    type: "numeric",
+    type: "mcq",
     question: "A machine costs $800,000 with a useful life of 5 years and $50,000 salvage value. Using double-declining balance depreciation, what is the depreciation expense in Year 1?",
-    correctAnswer: "320000",
+    choices: [
+      "160,000",
+      "300,000",
+      "320,000",
+      "400,000"
+    ],
+    correctAnswer: "320,000",
     explanation: "Double-declining balance rate = 2 / 5 = 40%. Year 1 depreciation = $800,000 × 40% = $320,000. Note that salvage value is not subtracted from cost in the DDB calculation until the book value approaches salvage value."
   },
   {
@@ -407,8 +425,14 @@ export const accountingQuestions: Question[] = [
     id: "acc-29",
     section: "Accounting",
     difficulty: "Advanced",
-    type: "numeric",
+    type: "mcq",
     question: "A company has beginning inventory of $150, purchases of $500, and ending inventory of $200. What is Cost of Goods Sold?",
+    choices: [
+      "450",
+      "550",
+      "650",
+      "850"
+    ],
     correctAnswer: "450",
     explanation: "COGS = Beginning Inventory + Purchases − Ending Inventory = $150 + $500 − $200 = $450."
   },
@@ -461,8 +485,14 @@ export const accountingQuestions: Question[] = [
     id: "acc-33",
     section: "Accounting",
     difficulty: "Advanced",
-    type: "numeric",
+    type: "mcq",
     question: "A company has EBIT of $250, D&A of $80, increase in working capital of $30, CapEx of $60, and a tax rate of 25%. What is Unlevered Free Cash Flow?",
+    choices: [
+      "150.0",
+      "177.5",
+      "200.0",
+      "215.0"
+    ],
     correctAnswer: "177.5",
     explanation: "UFCF = EBIT × (1 − Tax Rate) + D&A − Increase in Working Capital − CapEx = $250 × 0.75 + $80 − $30 − $60 = $187.5 + $80 − $30 − $60 = $177.5."
   },
@@ -515,8 +545,14 @@ export const accountingQuestions: Question[] = [
     id: "acc-37",
     section: "Accounting",
     difficulty: "Advanced",
-    type: "numeric",
+    type: "mcq",
     question: "A company has Accounts Receivable of $80, Inventory of $120, Prepaid Expenses of $10, Accounts Payable of $60, and Accrued Liabilities of $30. What is Net Working Capital (excluding cash)?",
+    choices: [
+      "90",
+      "120",
+      "150",
+      "210"
+    ],
     correctAnswer: "120",
     explanation: "Net Working Capital (excluding cash) = (A/R + Inventory + Prepaid Expenses) − (A/P + Accrued Liabilities) = ($80 + $120 + $10) − ($60 + $30) = $210 − $90 = $120."
   },
@@ -584,8 +620,14 @@ export const accountingQuestions: Question[] = [
     id: "acc-42",
     section: "Accounting",
     difficulty: "Elite",
-    type: "numeric",
+    type: "mcq",
     question: "Company A acquires Company B for $800M. Company B has net identifiable assets with a book value of $300M. After fair value adjustments, tangible assets are written up by $100M and identifiable intangible assets of $150M are recognized. What is the goodwill recorded (in millions)?",
+    choices: [
+      "150",
+      "250",
+      "350",
+      "500"
+    ],
     correctAnswer: "250",
     explanation: "Fair Value of Net Identifiable Assets = Book Value + Write-Up of Tangible Assets + Identifiable Intangibles = $300M + $100M + $150M = $550M. Goodwill = Purchase Price − Fair Value of Net Identifiable Assets = $800M − $550M = $250M."
   },
@@ -638,9 +680,10 @@ export const accountingQuestions: Question[] = [
     id: "acc-46",
     section: "Accounting",
     difficulty: "Elite",
-    type: "numeric",
+    type: "mcq",
     question: "An acquired company has $60M of identifiable intangible assets (customer relationships) with a 10-year useful life, assigned during purchase price allocation. Assuming straight-line amortization and a 25% tax rate, what is the annual after-tax impact on Net Income from this amortization (in millions)?",
-    correctAnswer: "4.5",
+    choices: ["$3.0", "$4.5", "$6.0", "$7.5"],
+    correctAnswer: "$4.5",
     explanation: "Annual amortization = $60M / 10 = $6M. After-tax impact = $6M × (1 − 0.25) = $4.5M reduction in Net Income per year."
   },
   {
@@ -662,9 +705,10 @@ export const accountingQuestions: Question[] = [
     id: "acc-48",
     section: "Accounting",
     difficulty: "Elite",
-    type: "numeric",
+    type: "mcq",
     question: "A company acquires a target for $1,200M, funded by 60% cash and 40% new debt. The target has $400M in assets (at fair value) and $150M in liabilities. What is the goodwill created from this acquisition (in millions)?",
-    correctAnswer: "950",
+    choices: ["$800", "$950", "$1,050", "$1,200"],
+    correctAnswer: "$950",
     explanation: "Net Identifiable Assets at Fair Value = $400M − $150M = $250M. Goodwill = Purchase Price − Fair Value of Net Identifiable Assets = $1,200M − $250M = $950M. The funding mix does not affect the goodwill calculation."
   },
   {

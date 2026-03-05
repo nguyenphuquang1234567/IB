@@ -39,19 +39,43 @@ interface QuizState {
   dragQuizCompleted: boolean;
   timeRemaining: number;
   progress: UserProgress;
+  dbAnalytics: {
+    overall: {
+      totalQuestionsDone: number;
+      totalCorrectAnswers: number;
+      overallAccuracy: number;
+    };
+    sections: {
+      section: string;
+      questionsDone: number;
+      correctAnswers: number;
+      accuracy: number;
+    }[];
+    recentResults: {
+      id: string;
+      section: string;
+      difficulty: string;
+      accuracy: number;
+      createdAt: string;
+    }[];
+  };
 
   essayQuestions: IbQuestion[];
+  allTechnicalQuestions: Question[];
 
   setDifficulty: (d: Difficulty) => void;
   setEliteMode: (elite: boolean) => void;
   setEssayQuestions: (questions: IbQuestion[]) => void;
-  startQuiz: (section?: Section) => void;
+  setAllTechnicalQuestions: (questions: Question[]) => void;
+  startQuiz: (section?: Section, questions?: Question[]) => void;
   startDragQuiz: () => void;
+  fetchDBAnalytics: () => Promise<void>;
+  fetchAllTechnicalQuestions: () => Promise<void>;
   submitAnswer: (questionId: string, answer: string) => void;
   submitDragAnswer: (questionId: string, answer: string) => void;
   nextQuestion: () => void;
   prevQuestion: () => void;
-  completeQuiz: () => void;
+  completeQuiz: () => Promise<void>;
   completeDragQuiz: () => void;
   setTimeRemaining: (t: number) => void;
   resetQuiz: () => void;
@@ -83,7 +107,13 @@ export const useQuizStore = create<QuizState>()(
       dragQuizCompleted: false,
       timeRemaining: 1200,
       progress: defaultProgress,
+      dbAnalytics: {
+        overall: { totalQuestionsDone: 0, totalCorrectAnswers: 0, overallAccuracy: 0 },
+        sections: [],
+        recentResults: []
+      },
       essayQuestions: [],
+      allTechnicalQuestions: [],
 
       setDifficulty: (d) => set({ difficulty: d }),
 
@@ -91,12 +121,44 @@ export const useQuizStore = create<QuizState>()(
 
       setEssayQuestions: (questions) => set({ essayQuestions: questions }),
 
-      startQuiz: (section) => {
-        const { difficulty, eliteMode } = get();
-        const pool = getFilteredQuestions(section, difficulty, eliteMode);
-        const questions = getRandomQuestions(pool, 20);
+      setAllTechnicalQuestions: (questions) => {
+        if (Array.isArray(questions)) {
+          set({ allTechnicalQuestions: questions });
+        }
+      },
+
+      startQuiz: (section, questions) => {
+        const { difficulty, eliteMode, allTechnicalQuestions } = get();
+
+        let quizQuestions: Question[] = [];
+
+        if (questions) {
+          quizQuestions = questions;
+        } else {
+          // Logic to prefer DB questions if available
+          const pool = allTechnicalQuestions.length > 0
+            ? allTechnicalQuestions
+            : getFilteredQuestions(section, difficulty, eliteMode);
+
+          // If we are using the DB pool, we need to filter it here since we aren't using the local getFilteredQuestions on it
+          let filteredPool = pool;
+          if (allTechnicalQuestions.length > 0) {
+            if (section) {
+              filteredPool = filteredPool.filter(q => q.section === section);
+            }
+            if (difficulty && !eliteMode) {
+              filteredPool = filteredPool.filter(q => q.difficulty === difficulty);
+            }
+            if (!eliteMode) {
+              filteredPool = filteredPool.filter(q => q.difficulty !== "Elite");
+            }
+          }
+
+          quizQuestions = getRandomQuestions(filteredPool, 20);
+        }
+
         set({
-          currentQuiz: questions,
+          currentQuiz: quizQuestions,
           currentIndex: 0,
           answers: {},
           quizStarted: true,
@@ -115,6 +177,41 @@ export const useQuizStore = create<QuizState>()(
           dragQuizStarted: true,
           dragQuizCompleted: false,
         });
+      },
+
+      fetchDBAnalytics: async () => {
+        try {
+          const res = await fetch('/api/quiz-progress');
+          if (res.ok) {
+            const data = await res.json();
+            console.log('[Store] fetchDBAnalytics response:', JSON.stringify(data, null, 2));
+            set({
+              dbAnalytics: {
+                overall: data.overall || { totalQuestionsDone: 0, totalCorrectAnswers: 0, overallAccuracy: 0 },
+                sections: data.sections || [],
+                recentResults: data.recentResults || [],
+              }
+            });
+          } else {
+            console.error('[Store] fetchDBAnalytics failed with status:', res.status);
+          }
+        } catch (err) {
+          console.error("[Store] fetchDBAnalytics network error:", err);
+        }
+      },
+
+      fetchAllTechnicalQuestions: async () => {
+        try {
+          const res = await fetch('/api/technical-questions');
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data)) {
+              set({ allTechnicalQuestions: data });
+            }
+          }
+        } catch (err) {
+          console.error("[Store] fetchAllTechnicalQuestions network error:", err);
+        }
       },
 
       submitAnswer: (questionId, answer) => {
@@ -143,7 +240,7 @@ export const useQuizStore = create<QuizState>()(
         }
       },
 
-      completeQuiz: () => {
+      completeQuiz: async () => {
         const { currentQuiz, answers, progress, difficulty } = get();
 
         let correct = 0;
@@ -200,6 +297,33 @@ export const useQuizStore = create<QuizState>()(
             quizHistory: [...progress.quizHistory, result],
           },
         });
+
+        // Sync with database
+        console.log('Syncing sectionBreakdown to DB:', sectionBreakdown);
+        try {
+          const res = await fetch('/api/quiz-progress', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              sectionBreakdown,
+              difficulty,
+              score: correct,
+              total: currentQuiz.length,
+              accuracy
+            }),
+          });
+          if (!res.ok) {
+            const errorData = await res.json().catch(() => ({ details: res.statusText }));
+            console.error('[Store] Sync Error:', errorData);
+          } else {
+            console.log('[Store] Sync successful — refreshing analytics...');
+            await get().fetchDBAnalytics();
+          }
+        } catch (err: any) {
+          console.error('[Store] Network Error during sync:', err.message);
+        }
       },
 
       completeDragQuiz: () => {
@@ -280,6 +404,8 @@ export const useQuizStore = create<QuizState>()(
         progress: state.progress,
         difficulty: state.difficulty,
         eliteMode: state.eliteMode,
+        allTechnicalQuestions: state.allTechnicalQuestions,
+        essayQuestions: state.essayQuestions,
       }),
     }
   )

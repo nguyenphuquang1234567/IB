@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,7 +23,10 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { fitBehavioralQuestions } from "@/lib/questions/fit-behavioral";
-import { Question } from "@/types/question";
+import { allQuestions as localAllQuestions } from "@/lib/questions";
+import { Question, Section } from "@/types/question";
+import { useQuizStore } from "@/store/useQuizStore";
+import { Calculator, Building2, DollarSign, Scale, BarChart3, Percent, Users, Loader2 } from "lucide-react";
 
 const TOTAL_IB400 = 400;
 
@@ -62,16 +65,84 @@ function getRankLabel(accuracy: number) {
   return "Not Ready";
 }
 
-type QuizMode = "select" | "mc";
+type QuizMode = "select" | "section_select" | "mc";
+
+const sectionConfigs: {
+  label: Section;
+  icon: typeof Calculator;
+  color: string;
+  gradient: string;
+}[] = [
+    { label: "Accounting", icon: Calculator, color: "text-amber-600", gradient: "from-amber-500/10 to-amber-600/5" },
+    { label: "EV vs Equity Value", icon: Building2, color: "text-orange-600", gradient: "from-orange-500/10 to-orange-600/5" },
+    { label: "Valuation", icon: DollarSign, color: "text-amber-600", gradient: "from-amber-500/10 to-amber-600/5" },
+    { label: "M&A", icon: Scale, color: "text-orange-600", gradient: "from-orange-500/10 to-orange-600/5" },
+    { label: "LBO", icon: BarChart3, color: "text-red-600", gradient: "from-red-500/10 to-red-600/5" },
+    { label: "Accretion/Dilution", icon: Percent, color: "text-rose-600", gradient: "from-rose-500/10 to-rose-600/5" },
+    { label: "Fit & Behavioral", icon: Users, color: "text-orange-600", gradient: "from-orange-500/10 to-orange-600/5" },
+  ];
 
 export default function QuizPage() {
   const router = useRouter();
+  const {
+    allTechnicalQuestions,
+    startQuiz,
+    submitAnswer: storeSubmitAnswer,
+    completeQuiz,
+    fetchDBAnalytics,
+    fetchAllTechnicalQuestions,
+  } = useQuizStore();
+  const [loading, setLoading] = useState(allTechnicalQuestions.length === 0);
   const [mode, setMode] = useState<QuizMode>("select");
-  const [questions, setQuestions] = useState<Question[]>(fitBehavioralQuestions);
+  const [selectedSection, setSelectedSection] = useState<Section>("Fit & Behavioral");
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [revealed, setRevealed] = useState<Record<string, boolean>>({});
   const [finished, setFinished] = useState(false);
+  const [isFinishing, setIsFinishing] = useState(false);
+  const [dbSections, setDbSections] = useState<any[]>([]);
+
+  const fetchProgress = useCallback(() => {
+    fetch('/api/quiz-progress')
+      .then(res => res.json())
+      .then(data => {
+        if (data.sections) {
+          setDbSections(data.sections);
+        }
+      })
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    fetchProgress();
+  }, [fetchProgress]);
+
+  // Load questions from DB if store is empty
+  useEffect(() => {
+    if (allTechnicalQuestions.length === 0) {
+      setLoading(true);
+      fetchAllTechnicalQuestions().finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+  }, [allTechnicalQuestions.length, fetchAllTechnicalQuestions]);
+
+  const handleStartSection = useCallback((section: Section) => {
+    const safeQuestions = Array.isArray(allTechnicalQuestions) ? allTechnicalQuestions : [];
+    const sectionQuestions = shuffleArray(safeQuestions.filter((q: Question) => q.section === section));
+
+    // Reset local states
+    setCurrentIndex(0);
+    setAnswers({});
+    setRevealed({});
+    setFinished(false);
+
+    setSelectedSection(section);
+    setQuestions(sectionQuestions);
+    startQuiz(section, sectionQuestions);
+    setMode("mc");
+  }, [allTechnicalQuestions, startQuiz]);
 
   const question = questions[currentIndex];
   const userAnswer = question ? answers[question.id] : undefined;
@@ -90,7 +161,7 @@ export default function QuizPage() {
       correct,
       answered: Object.keys(answers).length,
       total: questions.length,
-      accuracy: Object.keys(answers).length > 0 ? Math.round((correct / Object.keys(answers).length) * 100) : 0,
+      accuracy: questions.length > 0 ? Math.round((correct / questions.length) * 100) : 0,
     };
   }, [answers, questions]);
 
@@ -98,26 +169,38 @@ export default function QuizPage() {
     (choice: string) => {
       if (isRevealed || !question) return;
       setAnswers((prev) => ({ ...prev, [question.id]: choice }));
+      storeSubmitAnswer(question.id, choice);
       setRevealed((prev) => ({ ...prev, [question.id]: true }));
     },
-    [isRevealed, question]
+    [isRevealed, question, storeSubmitAnswer]
   );
 
   const handleNext = useCallback(() => {
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
-      setFinished(true);
+      setIsFinishing(true);
+      completeQuiz().then(() => {
+        // completeQuiz already calls fetchDBAnalytics() internally on success
+        setFinished(true);
+        setIsFinishing(false);
+      }).catch((err) => {
+        console.error("Critical error during quiz completion:", err);
+        setFinished(true);
+        setIsFinishing(false);
+      });
     }
-  }, [currentIndex, questions.length]);
+  }, [currentIndex, questions.length, completeQuiz]);
 
   const handleShuffle = useCallback(() => {
-    setQuestions(shuffleArray(fitBehavioralQuestions));
+    const safeQuestions = Array.isArray(allTechnicalQuestions) ? allTechnicalQuestions : [];
+    const sectionQuestions = safeQuestions.filter((q: Question) => q.section === selectedSection);
+    setQuestions(shuffleArray(sectionQuestions));
     setCurrentIndex(0);
     setAnswers({});
     setRevealed({});
     setFinished(false);
-  }, []);
+  }, [allTechnicalQuestions, selectedSection]);
 
   const handleReset = useCallback(() => {
     setCurrentIndex(0);
@@ -128,13 +211,22 @@ export default function QuizPage() {
 
   const handleBackToSelect = useCallback(() => {
     setMode("select");
+    fetchProgress();
     handleReset();
-  }, [handleReset]);
+  }, [handleReset, fetchProgress]);
 
   const randomTip = useMemo(() => {
-    const tips = TIPS["Fit & Behavioral"];
+    const tips = TIPS[selectedSection] || TIPS["Fit & Behavioral"];
     return tips[Math.floor(Math.random() * tips.length)];
-  }, [currentIndex]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentIndex, selectedSection]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (loading) {
+    return (
+      <div className="max-w-2xl mx-auto flex items-center justify-center min-h-[50vh]">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   // === MODE SELECTION SCREEN ===
   if (mode === "select") {
@@ -159,7 +251,7 @@ export default function QuizPage() {
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Card
                 className="cursor-pointer shadow-sm border-border/40 hover:border-primary/40 hover:shadow-md transition-all h-full group"
-                onClick={() => setMode("mc")}
+                onClick={() => setMode("section_select")}
               >
                 <CardContent className="pt-8 pb-8 flex flex-col items-center text-center space-y-4">
                   <div className="w-16 h-16 rounded-2xl gradient-primary flex items-center justify-center shadow-lg shadow-primary/20 group-hover:shadow-primary/40 transition-shadow">
@@ -172,10 +264,10 @@ export default function QuizPage() {
                     </p>
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    Answer multiple-choice questions covering Fit & Behavioral topics. Instant feedback with explanations.
+                    Answer multiple-choice questions covering all technical and behavioral topics. Instant feedback with explanations.
                   </p>
                   <Badge variant="secondary" className="text-[10px]">
-                    {fitBehavioralQuestions.length} questions
+                    {allTechnicalQuestions.length} questions
                   </Badge>
                 </CardContent>
               </Card>
@@ -212,6 +304,83 @@ export default function QuizPage() {
     );
   }
 
+  if (mode === "section_select") {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight flex items-center gap-3">
+                <ListChecks className="w-6 h-6 text-primary" />
+                Select a Section
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Choose a specific domain to practice your multiple-choice questions
+              </p>
+            </div>
+            <Button variant="outline" size="sm" onClick={() => setMode("select")} className="hidden sm:flex">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {sectionConfigs.map((section, index) => {
+              const safeQuestions = Array.isArray(allTechnicalQuestions) ? allTechnicalQuestions : [];
+              const questionCount = safeQuestions.filter(q => q.section === section.label).length;
+              const sectionDb = dbSections.find(s => s.section === section.label);
+              const displayAccuracy = sectionDb ? `${sectionDb.accuracy}%` : "0%";
+
+              return (
+                <motion.div
+                  key={section.label}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.2, delay: index * 0.05 }}
+                  whileHover={{ y: -4 }}
+                >
+                  <Card
+                    className="cursor-pointer shadow-sm hover:shadow-md transition-all h-full group border-border/40 hover:border-primary/30"
+                    onClick={() => handleStartSection(section.label)}
+                  >
+                    <CardContent className="p-6 flex flex-col items-center text-center space-y-4">
+                      <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm transition-transform group-hover:scale-110", `bg-gradient-to-br ${section.gradient}`)}>
+                        <section.icon className={cn("w-7 h-7", section.color)} />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-base leading-tight">{section.label}</h3>
+                        <div className="mt-2 flex items-center justify-center gap-2">
+                          <Badge variant="secondary" className="text-[10px] px-2 py-0">
+                            {questionCount} questions
+                          </Badge>
+                          <Badge variant="outline" className={cn("text-[10px] px-2 py-0",
+                            sectionDb?.accuracy >= 80 ? "text-emerald-600 border-emerald-200 bg-emerald-50" :
+                              sectionDb?.accuracy >= 50 ? "text-amber-600 border-amber-200 bg-amber-50" :
+                                "text-muted-foreground"
+                          )}>
+                            {displayAccuracy} Accuracy
+                          </Badge>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          <Button variant="outline" className="w-full mt-6 sm:hidden" onClick={() => setMode("select")}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Modes
+          </Button>
+        </motion.div>
+      </div>
+    );
+  }
+
   // === FINISHED SCREEN (MC) ===
   if (finished) {
     return (
@@ -234,14 +403,14 @@ export default function QuizPage() {
                   <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider">Correct</p>
                 </div>
                 <div className="text-center min-w-[80px]">
-                  <p className="text-2xl sm:text-3xl font-bold text-red-500 tabular-nums">{stats.answered - stats.correct}</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-red-500 tabular-nums">{stats.total - stats.correct}</p>
                   <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider">Wrong</p>
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-                <Button variant="outline" onClick={handleBackToSelect}>
+                <Button variant="outline" onClick={() => { setMode("section_select"); fetchProgress(); }}>
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Quiz Selection
+                  Other Sections
                 </Button>
                 <Button onClick={handleReset}>
                   <RotateCcw className="w-4 h-4 mr-2" />
@@ -268,21 +437,21 @@ export default function QuizPage() {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-primary shrink-0" />
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                IB 400 — Fit & Behavioral
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground truncate max-w-[200px] sm:max-w-none">
+                IB 400 — {selectedSection}
               </h1>
             </div>
-            <p className="text-xs sm:text-sm text-muted-foreground font-medium">✨ Master your behavioral questions</p>
+            <p className="text-xs sm:text-sm text-muted-foreground font-medium">✨ Master your technical & qualitative skills</p>
           </div>
 
           <Button
             variant="outline"
             size="sm"
-            onClick={handleBackToSelect}
+            onClick={() => setMode("section_select")}
             className="w-full sm:w-auto h-9 text-xs font-semibold border-border/60 hover:bg-muted/50"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Selection
+            Sections
           </Button>
         </div>
 
@@ -382,7 +551,7 @@ export default function QuizPage() {
               <CardContent className="pt-5 pb-5 space-y-5">
                 <div className="flex items-start gap-3">
                   <Badge className="gradient-primary text-white text-[10px] px-2 py-0.5 shrink-0 tabular-nums">
-                    {currentIndex + 1}/{TOTAL_IB400}
+                    {currentIndex + 1}/{questions.length}
                   </Badge>
                   <p className="text-sm font-medium leading-relaxed flex-1 break-words overflow-wrap-anywhere overflow-hidden">
                     {question.question}
@@ -496,11 +665,21 @@ export default function QuizPage() {
                       </div>
 
                       <div className="flex justify-end pt-1">
-                        <Button onClick={handleNext} size="sm" className="gradient-primary text-white shadow-md shadow-primary/20">
+                        <Button
+                          onClick={handleNext}
+                          disabled={isFinishing}
+                          size="sm"
+                          className="gradient-primary text-white shadow-md shadow-primary/20"
+                        >
                           {currentIndex < questions.length - 1 ? (
                             <>
                               Next Question
                               <ChevronRight className="w-4 h-4 ml-1" />
+                            </>
+                          ) : isFinishing ? (
+                            <>
+                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              Calculating...
                             </>
                           ) : (
                             <>
