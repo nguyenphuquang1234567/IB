@@ -80,11 +80,7 @@ export const DOMAINS: Domain[] = [
     landingHref: "/ib",
     items: [
       { href: "/quiz", label: "400 IB Book", icon: ListChecks, description: "MCQ & behavioral practice" },
-      { href: "/quiz/essay", label: "Essay Mode", icon: PenLine },
       { href: "/valuation", label: "Valuation Labs", icon: Calculator },
-      { href: "/dcf", label: "DCF Lab", icon: Calculator },
-      { href: "/valuation/comps", label: "Comps Lab", icon: BarChart3 },
-      { href: "/valuation/lbo", label: "LBO Lab", icon: Landmark },
     ],
   },
   {
