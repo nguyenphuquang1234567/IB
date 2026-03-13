@@ -33,7 +33,7 @@ export default function LoginPage() {
       setError("Invalid credentials. Try demo@ib400.com / demo1234");
       setLoading(false);
     } else {
-      router.push("/dashboard");
+      router.push("/welcome");
     }
   };
 
@@ -145,7 +145,7 @@ export default function LoginPage() {
             <Button
               variant="outline"
               type="button"
-              onClick={() => signIn("google", { callbackUrl: "/dashboard" }, { prompt: "select_account" })}
+              onClick={() => signIn("google", { callbackUrl: "/welcome" }, { prompt: "select_account" })}
               className="w-full font-varela font-bold border-finstep-brown/10 hover:border-finstep-orange/50 hover:bg-finstep-orange/5 transition-all duration-300 gap-3"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
